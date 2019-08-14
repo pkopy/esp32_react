@@ -1,26 +1,52 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import  './App.scss'
+import AppBar from './AppBar'
+import Loader from './Loader'
+import Details from './Details/Details'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+    state ={
+        load: false,
+        scales: []
+    }
+
+    load = () => {
+        this.setState({load:true})
+        fetch('http://localhost:5000/findscales')
+            .then(data => data.json())
+            .then(data => {
+                this.setState({scales: data});
+                this.setState({load: false})
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({load: false})
+            })
+    }
+
+    render () {
+        return (
+        <div className="App">
+            {this.state.load&&<Loader />}
+            <AppBar
+                load={this.load}
+            />
+            {this.state.scales.length>0&&
+                <div className="scales">
+                    <ol>
+                        {this.state.scales.map(scale =>
+                            <li key={scale.address} className="scale">
+                                <div><h1>{scale.address}:{scale.port}</h1></div>
+                            </li>    
+                        )}
+                    </ol>
+
+                </div>
+            }
+            <Details/>
+        </div>
+      );
+    }
 }
 
 export default App;
