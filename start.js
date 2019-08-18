@@ -9,6 +9,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const server = require('./lib/server')
 
 const reactServer = {}
 
@@ -21,7 +22,7 @@ app.get('/', function (req, res) {
 
 
 //Init script
-
+  server.init()
   app.listen(5100, () => console.log(`React listening on port 5100!`))
 
 //Export the module

@@ -3,6 +3,10 @@ import  './App.scss'
 import AppBar from './AppBar'
 import Loader from './Loader'
 import Details from './Details/Details'
+const dotenv = require('dotenv');
+dotenv.config();
+const PORT = process.env.PORT || 5000
+const URL = process.env.URL || 'localhost'
 
 class App extends Component {
     state ={
@@ -12,9 +16,10 @@ class App extends Component {
 
     load = () => {
         this.setState({load:true})
-        fetch('http://localhost:5000/findscales')
+        fetch(`http://${URL}:${PORT}/findscales`)
             .then(data => data.json())
             .then(data => {
+                console.log(data)
                 this.setState({scales: data});
                 this.setState({load: false})
             })
@@ -35,8 +40,8 @@ class App extends Component {
                 <div className="scales">
                     <ol>
                         {this.state.scales.map(scale =>
-                            <li key={scale.address} className="scale">
-                                <div><h1>{scale.address}:{scale.port}</h1></div>
+                            <li key={scale.ssid} className="scale">
+                                <div><h1>{scale.ssid}</h1></div>
                             </li>    
                         )}
                     </ol>
