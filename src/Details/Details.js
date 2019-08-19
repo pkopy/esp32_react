@@ -53,7 +53,7 @@ class Details extends Component {
 
     test = (measure) => {
         const conf = measure.all.shift()
-        console.log(measure.all)
+        console.log(conf)
         if (measure.stab || measure.continue) {
 
             let measureArray = []
@@ -73,31 +73,14 @@ class Details extends Component {
         }
         if (conf.complete) {
             this.setState({end:true})
+        } else {
+            this.setState({end:false})
         }
         
     }
-    // test = (measure) => {
-    //     // console.log(measureArray)
-    //     if (measure.measure && measure.stab) {
-    //         let measureArray = this.state.data
-    //         measureArray.push({arg: measureArray.length, val: measure.stab})
-    //         this.setState({data:[]})
-    //         // console.log(measureArray)
-    //         this.setState({data:measureArray})
-    //         let array = this.state.rows
-    //         let date = `${measure.time[0]}-${measure.time[1]}-${measure.time[2]}T${measure.time[3]}:${measure.time[4]}:${measure.time[5]}`
-    //         array.push({date:date, measure:measure.stab, command:measure.command, base:measure.base, max:measure.max, min:measure.min, index:measure.measureNumber})
-    //         this.setState({rows:[]})
-    //         this.setState({rows:array})
-    //     }
-    //     if (measure.end) {
-    //         this.setState({end:true})
-    //     }
-    //     // console.log(this)
-    //     // this.render()
-    // }
+   
     oko = () => {
-        const connection = new WebSocket(`ws://10.10.1.71:7000`)
+        const connection = new WebSocket(`ws://${this.props.address}:7000`)
 
         this.setState({connection})
         connection.onopen = () => {
