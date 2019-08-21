@@ -13,6 +13,10 @@ const server = require('./lib/server')
 
 const reactServer = {}
 
+const dotenv = require('dotenv');
+dotenv.config();
+console.log(`Your port is ${process.env.PORT}`)
+
 app.use(express.static(path.join(__dirname, './build')));
 
 app.get('/', function (req, res) {

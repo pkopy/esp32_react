@@ -4,12 +4,12 @@ import AppBar from './AppBar'
 import Drawer from './Drawer'
 import Loader from './Loader'
 import Details from './Details/Details'
+
 const dotenv = require('dotenv');
-
-
 dotenv.config();
-const PORT = process.env.PORT || 5000
-const URL = process.env.URL || 'localhost'
+console.log(`Your port is ${process.env.REACT_APP_PORTX}`)
+// const PORT = PORT || 5000
+// const URL = URL || 'localhost'
 
 class App extends Component {
     state ={
@@ -23,7 +23,7 @@ class App extends Component {
     load = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
-        fetch(`http://${URL}:${PORT}/findscales`)
+        fetch(`http://localhost:5000/findscales`)
             .then(data => data.json())
             .then(data => {
                 console.log(data)

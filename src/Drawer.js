@@ -19,6 +19,8 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import SearchIcon from '@material-ui/icons/Search';
 import Details from './Details/Details'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Orders from './Orders/Orders'
 
 const drawerWidth = 240;
 
@@ -138,25 +140,37 @@ export default function PersistentDrawerLeft(props) {
        
             
         <List>
-            <ListItem button key={'text'}>
-              <ListItemIcon> <SearchIcon /></ListItemIcon>
-              <ListItemText primary='Szukaj' onClick={search}/>
+            <ListItem button onClick={search}>
+              <ListItemIcon><SearchIcon /></ListItemIcon>
+              <ListItemText primary='Szukaj' />
             </ListItem>
-          {['Twoje wagi (ESP32)'].map((text, index) => (
+            <ListItem button >
+              <ListItemIcon><InboxIcon /></ListItemIcon>
+              <ListItemText primary='Twoje wagi (ESP32)'/>
+            </ListItem>
+          {/* {['szukaj','Twoje wagi (ESP32)'].map((text, index) => (
             <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <SearchIcon />}</ListItemIcon>
+              <ListItemIcon> <InboxIcon /></ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
-          ))}
+          ))} */}
         </List>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem button >
+                <ListItemIcon><SearchIcon /></ListItemIcon>
+                <ListItemText primary='Twoje zlecenia'/>
+                </ListItem>
+            <ListItem button >
+                <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
+                <ListItemText primary='Nowe zlecenie'/>
+            </ListItem>
+          {/* {['Twoje zlecenia', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
-          ))}
+          ))} */}
         </List>
       </Drawer>
       <main
@@ -165,11 +179,12 @@ export default function PersistentDrawerLeft(props) {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Typography paragraph>
-            {props.address&&<Details
-                address={props.address}
-            />}
-        </Typography>
+        
+        {props.address&&<Details
+            address={props.address}
+        />}
+        
+        <Orders/>
         <Typography paragraph>
           
         </Typography>
