@@ -43,13 +43,18 @@
     padding: 1em;
     text-align: center;
     text-transform: uppercase;
-    border: 1px solid #c4c4c4;
+    border: 1px solid ;
+    border-color: rgb(0,0,0);
     border-radius: 10px;
     margin: 5px;
     cursor: pointer;
     transition-duration: .4s;
     min-height: 10em;
+    &:hover {
+        border:2px solid #000
+    }
 }
+
 
 @keyframes App-logo-spin {
   from {

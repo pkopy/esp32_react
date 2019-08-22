@@ -79,7 +79,7 @@ class Details extends Component {
         
     }
    
-    oko = () => {
+    connectToSocket = () => {
         const connection = new WebSocket(`ws://${this.props.address}:7000`)
 
         this.setState({connection})
@@ -93,8 +93,6 @@ class Details extends Component {
         connection.onmessage = (e) => {
             let data = e.data;
             const measure = JSON.parse(data);
-            // let ok = false
-            // console.log(measure)
             if (measure.all && measure) {
                 this.test(measure)
                 this.setState({measure:measure.measure})
@@ -127,7 +125,7 @@ class Details extends Component {
             console.log('ERROR')
         }
     }
-    send = () => {
+    sendToSocket = () => {
         var msg = {"command": "SI", 'base': 200, 'max':50, 'min':100,'quantity':3, 'treshold': 100};
             // connection.send();
         this.setState({end:false})
@@ -145,7 +143,7 @@ class Details extends Component {
         <div className="App">
             {/* <Loader/> */}
             
-            <Button type='default' height='30px' text="START" onClick={this.oko}>START</Button>
+            <Button type='default' height='30px' text="START" onClick={this.connectToSocket}>START</Button>
             <Button height='30px' text="SEND" onClick={this.send}>SEND </Button>
             <Button height='30px' text="SEND" onClick={this.close}>CLOSE </Button>
             <ProgressBar

@@ -25,170 +25,179 @@ import Orders from './Orders/Orders'
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-  },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: '0 8px',
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
+    root: {
+        display: 'flex',
+    },
+    appBar: {
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    hide: {
+        display: 'none',
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 8px',
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end',
+    },
+    content: {
+        flexGrow: 1,
+        padding: theme.spacing(3),
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+        marginLeft: -drawerWidth,
+    },
+    contentShift: {
+        transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+        marginLeft: 0,
+    },
 }));
 
 export default function PersistentDrawerLeft(props) {
-  const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+    const classes = useStyles();
+    const theme = useTheme();
+    const [open, setOpen] = React.useState(false);
 
-  function handleDrawerOpen() {
-    setOpen(true);
-  }
+    function handleDrawerOpen() {
+        setOpen(true);
+    }
 
-  function handleDrawerClose() {
-    setOpen(false);
-  }
+    function handleDrawerClose() {
+        setOpen(false);
+    }
 
-  function search() {
-      props.load()
-      handleDrawerClose()
-  }
+    function search() {
+        props.load()
+        handleDrawerClose()
+    }
 
-  return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, open && classes.hide)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            E2R LITE
+    function newOrd() {
+        console.log(props.newOrder)
+        props.changeNewOrderStatus()
+        handleDrawerClose()
+        // props.newOrder = true
+    }
+
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <AppBar
+                position="fixed"
+                className={clsx(classes.appBar, {
+                    [classes.appBarShift]: open,
+                })}
+            >
+                <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        className={clsx(classes.menuButton, open && classes.hide)}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography variant="h6" noWrap>
+                        E2R LITE
           </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        className={classes.drawer}
-        variant="persistent"
-        anchor="left"
-        open={open}
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.drawerHeader}>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-          </IconButton>
-        </div>
-        <Divider />
-       
-            
-        <List>
-            <ListItem button onClick={search}>
-              <ListItemIcon><SearchIcon /></ListItemIcon>
-              <ListItemText primary='Szukaj' />
-            </ListItem>
-            <ListItem button >
-              <ListItemIcon><InboxIcon /></ListItemIcon>
-              <ListItemText primary='Twoje wagi (ESP32)'/>
-            </ListItem>
-          {/* {['szukaj','Twoje wagi (ESP32)'].map((text, index) => (
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                className={classes.drawer}
+                variant="persistent"
+                anchor="left"
+                open={open}
+                classes={{
+                    paper: classes.drawerPaper,
+                }}
+            >
+                <div className={classes.drawerHeader}>
+                    <IconButton onClick={handleDrawerClose}>
+                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                    </IconButton>
+                </div>
+                <Divider />
+
+
+                <List>
+                    <ListItem button onClick={search}>
+                        <ListItemIcon><SearchIcon /></ListItemIcon>
+                        <ListItemText primary='Szukaj' />
+                    </ListItem>
+                    <ListItem button >
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary='Twoje wagi (ESP32)' />
+                    </ListItem>
+                    {/* {['szukaj','Twoje wagi (ESP32)'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon> <InboxIcon /></ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))} */}
-        </List>
-        <Divider />
-        <List>
-            <ListItem button >
-                <ListItemIcon><SearchIcon /></ListItemIcon>
-                <ListItemText primary='Twoje zlecenia'/>
-                </ListItem>
-            <ListItem button >
-                <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
-                <ListItemText primary='Nowe zlecenie'/>
-            </ListItem>
-          {/* {['Twoje zlecenia', 'Trash', 'Spam'].map((text, index) => (
+                </List>
+                <Divider />
+                <List>
+                    <ListItem button >
+                        <ListItemIcon><SearchIcon /></ListItemIcon>
+                        <ListItemText primary='Twoje zlecenia' />
+                    </ListItem>
+                    <ListItem button onClick={newOrd}>
+                        <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
+                        <ListItemText primary='Nowe zlecenie' />
+                    </ListItem>
+                    {/* {['Twoje zlecenia', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))} */}
-        </List>
-      </Drawer>
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: open,
-        })}
-      >
-        <div className={classes.drawerHeader} />
-        
-        {props.address&&<Details
-            address={props.address}
-        />}
-        
-        <Orders/>
-        <Typography paragraph>
-          
-        </Typography>
-      </main>
-    </div>
-  );
+                </List>
+            </Drawer>
+            <main
+                className={clsx(classes.content, {
+                    [classes.contentShift]: open,
+                })}
+            >
+                <div className={classes.drawerHeader} />
+
+                {props.address && <Details
+                    address={props.address}
+                />}
+
+                {props.newOrder && <Orders
+                    address={props.address}
+                />}
+                <Typography paragraph>
+
+                </Typography>
+            </main>
+        </div>
+    );
 }

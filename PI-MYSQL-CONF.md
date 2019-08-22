@@ -34,7 +34,7 @@ https://dev.mysql.com/downloads/workbench/
 Aby połączyć się zdalnie z serwerem mysql edytuj plik:
 
 ```
-sudo nano /etc/mariadb.conf.d/50-server.conf
+sudo nano /etc/mysql/mariadb.conf.d/50-server.cnf
 ```
 
 - odkomentuj port = 3306
@@ -68,6 +68,11 @@ Nadaj uprawnienia do DB (lokalnie i w sieci):
 ```
 mysql> GRANT ALL privileges ON `mydb`.* TO 'myuser'@'localhost';
 mysql> GRANT ALL privileges ON `mydb`.* TO 'myuser'@'%';
+```
+Zakończ wszystko komendą:
+
+```
+mysql> FLUSH PRIVILEGES;
 ```
 
 Połącz się do DB za pomocą mysql workbech
