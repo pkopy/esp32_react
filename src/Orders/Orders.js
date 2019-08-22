@@ -11,6 +11,9 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import SocketLib from '../Socket'
+import Typography from '@material-ui/core/Typography';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -68,20 +71,21 @@ const operators = [
     },
 ];
 
-const scales = [
-    {
-        value: 'ESP1',
-        label: 'ESP1',
-    },
-    {
-        value: 'ESP2',
-        label: 'ESP2',
-    }
+// const scales = [
+//     {
+//         value: 'ESP1',
+//         label: 'ESP1',
+//     },
+//     {
+//         value: 'ESP2',
+//         label: 'ESP2',
+//     }
     
-];
+// ];
 
-export default function TextFields() {
+export default function TextFields(props) {
     const classes = useStyles();
+    const scales = props.scales
     const [values, setValues] = React.useState({
         name: '',
         base: '',
@@ -104,15 +108,16 @@ export default function TextFields() {
         errors: false
     })
     const [open, setOpen] = React.useState(false);
-    const [keys, setKeys] = React.useState()
+    const [connection, setConnection] = React.useState()
+    // const [keys, setKeys] = React.useState()
     const handleChange = name => event => {
         // console.log(event.target)
         setValues({ ...values, [name]: event.target.value });
     };
 
-    const  send = () => {
+    const  validate = () => {
         const valuesKeys = Object.keys(values)
-        setKeys(valuesKeys)
+        // setKeys(valuesKeys)
         const err = {}
         setError(err)
         
@@ -128,13 +133,22 @@ export default function TextFields() {
             setError(err)
             setOpen(true)
         } else {
+            const connection = SocketLib.connectToSocket(values.scale)
+            setConnection(connection)
             setOpen(true)
-            
         }
-        
-        // err.errors = false
-        // console.log(values)
     } 
+
+    const sendOrder = () => {
+        values.command = "SI"
+        values.base = parseInt(values.base)
+        values.min = parseInt(values.min)
+        values.max = parseInt(values.max)
+        values.treshold = parseInt(values.treshold)
+        values.quantity = parseInt(values.quantity)
+        console.log(values)
+        SocketLib.sendToSocket(values, connection)
+    }
 
     const closeDialog = () => {
         setOpen(false)
@@ -142,7 +156,7 @@ export default function TextFields() {
 
     return (
         <div>
-            <h1>Podaj szczegóły zlecenia</h1>
+            <Typography variant="h4" style={{marginBottom:20}}>Podaj szczegóły zlecenia</Typography>
             <div className={classes.container} noValidate autoComplete="off">
                 <TextField
                     id="name"
@@ -206,8 +220,8 @@ export default function TextFields() {
                     variant="outlined"
                 >
                     {scales.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
-                            {option.label}
+                        <MenuItem key={option.address} value={option.address}>
+                            {option.name}
                         </MenuItem>
                     ))}
 
@@ -299,7 +313,7 @@ export default function TextFields() {
                 />
             </div>
             <div className={classes.hr}/>
-            <Button className={classes.button} variant="outlined" color="primary" onClick={send}> Wyślij zlecenie</Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={validate}> Wyślij zlecenie</Button>
             <Button className={classes.button} variant="outlined" color="primary"> Zapisz zlecenie</Button>
             <Dialog
                 open={open}
@@ -307,10 +321,10 @@ export default function TextFields() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">Wysyłanie zlecenia</DialogTitle>
+                {!errors.errors?<DialogTitle id="alert-dialog-title">Wysyłanie zlecenia</DialogTitle>:<DialogTitle id="alert-dialog-title">UWAGA!</DialogTitle>}
                 <DialogContent>
                 {!errors.errors&&<DialogContentText id="alert-dialog-description">
-                    Zamierzasz wysłać następujące zlecenie do wagi: {values.scale} <br/>
+                    Zamierzasz wysłać następujące zlecenie do wagi: <b>{values.scale}</b> <br/> <br/>
                     <li>Twoja nazwa: {values.name}</li>
                     <li>Operator: {values.operator}</li>
                     <li>Waga: {values.scale}</li>
@@ -322,7 +336,7 @@ export default function TextFields() {
                     
                 </DialogContentText>}
                 {errors.errors&&<DialogContentText id="alert-dialog-description">
-                    Znaleziono błędy w formularzu: <br/>
+                    Znaleziono błędy w formularzu: <br/> <br/>
                     {errors.name&&<li>Twoja nazwa</li>}
                     {errors.operator&&<li>Operator</li>}
                     {errors.scale&&<li>Waga</li>}
@@ -337,7 +351,7 @@ export default function TextFields() {
                 <Button  onClick={closeDialog} color="primary">
                     {errors.errors?<span>Popraw</span>:<span>Zamknij</span>}
                 </Button>
-                <Button  color="primary" autoFocus disabled={errors.errors}>
+                <Button  color="primary" autoFocus disabled={errors.errors} onClick={sendOrder}>
                     Wyślij
                 </Button>
                 </DialogActions>

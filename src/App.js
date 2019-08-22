@@ -5,11 +5,14 @@ import Drawer from './Drawer'
 import Loader from './Loader'
 import Details from './Details/Details'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Scales from './Scales'
+import Lib from './Socket'
 
 
 const dotenv = require('dotenv');
 dotenv.config();
 console.log(`Your port is ${process.env.REACT_APP_PORTX}`)
+Lib.test()
 // const PORT = PORT || 5000
 // const URL = URL || 'localhost'
 
@@ -24,6 +27,10 @@ class App extends Component {
         end:false
     }
     componentDidMount = () => {
+        this.yourScales()
+    }
+
+    yourScales = () => {
         this.setState({load: true})
         fetch('http://localhost:5000/scale')
             .then(data => data.json())
@@ -36,7 +43,7 @@ class App extends Component {
                 this.setState({load: false})
             })
     }
-    load = () => {
+    findScales = () => {
         this.setState({load:true})
         this.setState({currentScale:{}})
         fetch(`http://localhost:5000/findscales`)
@@ -74,13 +81,16 @@ class App extends Component {
             {/* <AppBar
                 load={this.load}
             /> */}
+            {/* <Scales /> */}
             <Drawer
                 address={this.state.currentScale.address}
-                load={this.load}
+                findScales={this.findScales}
+                yourScales={this.yourScales}
                 newOrder={this.state.newOrder}
                 changeNewOrderStatus={this.changeNewOrderStatus}
+                scales={this.state.scales}
             />
-            {this.state.scales.length>0&&
+            {/* {this.state.scales.length>0&&
                 <div className="scales">
                     <ol>
                         {this.state.scales.map(scale =>
@@ -94,7 +104,7 @@ class App extends Component {
                     </ol>
 
                 </div>
-            }
+            } */}
             {/* {this.state.currentScale.address&&<Details
                 address={this.state.currentScale.address}
             />} */}

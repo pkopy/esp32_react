@@ -22,6 +22,8 @@ import Details from './Details/Details'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Orders from './Orders/Orders'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import Scales from './Scales'
+
 
 const drawerWidth = 240;
 
@@ -86,8 +88,9 @@ export default function PersistentDrawerLeft(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [view, setView] = React.useState({
-        order:false,
-        details:false
+        order: false,
+        details: false,
+        scales: false
     })
 
     function handleDrawerOpen() {
@@ -100,8 +103,13 @@ export default function PersistentDrawerLeft(props) {
 
     function search() {
         // drawerView('details')
-        props.load()
+        props.findScales()
         // handleDrawerClose()
+    }
+
+    function myScales () {
+        props.yourScales()
+        drawerView('scales')
     }
 
     
@@ -168,7 +176,7 @@ export default function PersistentDrawerLeft(props) {
                         <ListItemIcon><SearchIcon /></ListItemIcon>
                         <ListItemText primary='Szukaj' />
                     </ListItem>
-                    <ListItem button >
+                    <ListItem button onClick={myScales}>
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary='Twoje wagi (ESP32)' />
                     </ListItem>
@@ -192,12 +200,17 @@ export default function PersistentDrawerLeft(props) {
             >
                 <div className={classes.drawerHeader} />
 
+                {view.scales&&<Scales
+                    scales={props.scales}
+                />}
+
                 {view.details && <Details
                     address={props.address}
                 />}
 
                 {view.order && <Orders
                     address={props.address}
+                    scales={props.scales}
                 />}
                 <Typography paragraph>
 
