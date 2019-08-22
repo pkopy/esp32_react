@@ -17,6 +17,7 @@ class App extends Component {
     state ={
         load: false,
         newOrder: false,
+        details:false,
         scales: [],
         currentScale: {},
         details:false,

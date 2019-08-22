@@ -142,8 +142,6 @@ export default function TextFields() {
 
     return (
         <div>
-
-
             <h1>Podaj szczegóły zlecenia</h1>
             <div className={classes.container} noValidate autoComplete="off">
                 <TextField
@@ -217,10 +215,7 @@ export default function TextFields() {
                 <div className={classes.hr} style={{width:'50%'}}/>
             </div>
             <div className={classes.container} noValidate autoComplete="off">
-                
 
-                    
-                
                 <TextField
                     id="base"
                     label="Podstwa"
@@ -288,7 +283,6 @@ export default function TextFields() {
                     variant="outlined"
                 />
 
-
                 <TextField
                     id="quantity"
                     label="Ilość ważeń"
@@ -303,8 +297,6 @@ export default function TextFields() {
                     margin="normal"
                     variant="outlined"
                 />
-                
-
             </div>
             <div className={classes.hr}/>
             <Button className={classes.button} variant="outlined" color="primary" onClick={send}> Wyślij zlecenie</Button>
@@ -319,27 +311,26 @@ export default function TextFields() {
                 <DialogContent>
                 {!errors.errors&&<DialogContentText id="alert-dialog-description">
                     Zamierzasz wysłać następujące zlecenie do wagi: {values.scale} <br/>
-                    Operator: {values.operator}<br/>
-                    Podstawa: {values.base}<br/>
-                    Ilość ważeń: {values.quantity}
-
+                    <li>Twoja nazwa: {values.name}</li>
+                    <li>Operator: {values.operator}</li>
+                    <li>Waga: {values.scale}</li>
+                    <li>Podstawa: {values.base}</li>
+                    <li>Max: {values.max}</li>
+                    <li>Min: {values.min}</li>
+                    <li>Próg LO: {values.treshold}</li>
+                    <li>Ilość ważeń: {values.quantity}</li>
+                    
                 </DialogContentText>}
                 {errors.errors&&<DialogContentText id="alert-dialog-description">
                     Znaleziono błędy w formularzu: <br/>
-                    
-                        {errors.name&&<li>Twoja nazwa</li>}
-                        {errors.operator&&<li>Operator</li>}
-                        {errors.scale&&<li>Waga</li>}
-                        {errors.base&&<li>Podstawa</li>}
-                        {errors.max&&<li>Max</li>}
-                        {errors.min&&<li>Min</li>}
-                        {errors.treshold&&<li>Próg LO</li>}
-                        {errors.quantity&&<li>Ilość ważeń</li>}
-                    
-                    {/* Operator: {values.operator}<br/>
-                    Podstawa: {values.base}<br/>
-                    Ilość ważeń: {values.quantity} */}
-
+                    {errors.name&&<li>Twoja nazwa</li>}
+                    {errors.operator&&<li>Operator</li>}
+                    {errors.scale&&<li>Waga</li>}
+                    {errors.base&&<li>Podstawa</li>}
+                    {errors.max&&<li>Max</li>}
+                    {errors.min&&<li>Min</li>}
+                    {errors.treshold&&<li>Próg LO</li>}
+                    {errors.quantity&&<li>Ilość ważeń</li>}
                 </DialogContentText>}
                 </DialogContent>
                 <DialogActions>
@@ -351,7 +342,6 @@ export default function TextFields() {
                 </Button>
                 </DialogActions>
             </Dialog>
-
         </div>
     );
 }

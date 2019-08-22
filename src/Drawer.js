@@ -21,6 +21,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Details from './Details/Details'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Orders from './Orders/Orders'
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 const drawerWidth = 240;
 
@@ -84,6 +85,10 @@ export default function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [view, setView] = React.useState({
+        order:false,
+        details:false
+    })
 
     function handleDrawerOpen() {
         setOpen(true);
@@ -94,15 +99,27 @@ export default function PersistentDrawerLeft(props) {
     }
 
     function search() {
+        // drawerView('details')
         props.load()
-        handleDrawerClose()
+        // handleDrawerClose()
     }
 
-    function newOrd() {
-        console.log(props.newOrder)
-        props.changeNewOrderStatus()
+    
+
+    function drawerView(name) {
+        // console.log(props.newOrder)
+        const valuesKeys = Object.keys(view)
+        const helpView = {}
+        for (let value of valuesKeys) {
+            if (value !== name) {
+                helpView[value] = false
+            } else {
+                helpView[value] = true
+            }
+        }
+        setView(helpView)
         handleDrawerClose()
-        // props.newOrder = true
+
     }
 
     return (
@@ -126,7 +143,7 @@ export default function PersistentDrawerLeft(props) {
                     </IconButton>
                     <Typography variant="h6" noWrap>
                         E2R LITE
-          </Typography>
+                    </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -155,29 +172,17 @@ export default function PersistentDrawerLeft(props) {
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary='Twoje wagi (ESP32)' />
                     </ListItem>
-                    {/* {['szukaj','Twoje wagi (ESP32)'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon> <InboxIcon /></ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))} */}
                 </List>
                 <Divider />
                 <List>
                     <ListItem button >
-                        <ListItemIcon><SearchIcon /></ListItemIcon>
+                        <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
                         <ListItemText primary='Twoje zlecenia' />
                     </ListItem>
-                    <ListItem button onClick={newOrd}>
+                    <ListItem button onClick={() => drawerView('order')}>
                         <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
                         <ListItemText primary='Nowe zlecenie' />
                     </ListItem>
-                    {/* {['Twoje zlecenia', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))} */}
                 </List>
             </Drawer>
             <main
@@ -187,11 +192,11 @@ export default function PersistentDrawerLeft(props) {
             >
                 <div className={classes.drawerHeader} />
 
-                {props.address && <Details
+                {view.details && <Details
                     address={props.address}
                 />}
 
-                {props.newOrder && <Orders
+                {view.order && <Orders
                     address={props.address}
                 />}
                 <Typography paragraph>
