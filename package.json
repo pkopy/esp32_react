@@ -13,13 +13,15 @@
     "devextreme": "19.1.5",
     "devextreme-react": "19.1.5",
     "dotenv": "^8.1.0",
+    "material-table": "^1.50.0",
     "mysql": "^2.17.1",
     "node-sass": "^4.12.0",
     "node-wifi": "^2.0.7",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
-    "typeface-roboto": "0.0.75"
+    "typeface-roboto": "0.0.75",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "start": "react-scripts start",

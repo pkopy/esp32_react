@@ -23,6 +23,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Orders from './Orders/Orders'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import Scales from './Scales'
+import OrdersList from './Orders/OrdersList'
 
 
 const drawerWidth = 240;
@@ -90,7 +91,8 @@ export default function PersistentDrawerLeft(props) {
     const [view, setView] = React.useState({
         order: false,
         details: false,
-        scales: false
+        scales: false,
+        ordersList:false
     })
 
     function handleDrawerOpen() {
@@ -110,6 +112,12 @@ export default function PersistentDrawerLeft(props) {
     function myScales () {
         props.yourScales()
         drawerView('scales')
+    }
+
+    function myOrders () {
+        props.orders()
+        drawerView('ordersList')
+
     }
 
     
@@ -183,7 +191,7 @@ export default function PersistentDrawerLeft(props) {
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button >
+                    <ListItem button button onClick={myOrders}>
                         <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
                         <ListItemText primary='Twoje zlecenia' />
                     </ListItem>
@@ -202,6 +210,10 @@ export default function PersistentDrawerLeft(props) {
 
                 {view.scales&&<Scales
                     scales={props.scales}
+                />}
+
+                {view.ordersList&&<OrdersList 
+                    yourOrders={props.yourOrders}
                 />}
 
                 {view.details && <Details

@@ -71,17 +71,6 @@ const operators = [
     },
 ];
 
-// const scales = [
-//     {
-//         value: 'ESP1',
-//         label: 'ESP1',
-//     },
-//     {
-//         value: 'ESP2',
-//         label: 'ESP2',
-//     }
-    
-// ];
 
 export default function TextFields(props) {
     const classes = useStyles();
@@ -94,7 +83,8 @@ export default function TextFields(props) {
         operator: '',
         treshold: '',
         quantity: '',
-        scale:''
+        scale:'',
+        // scaleName: ''
     });
     const [errors, setError] = React.useState({
         name: false,
@@ -109,11 +99,23 @@ export default function TextFields(props) {
     })
     const [open, setOpen] = React.useState(false);
     const [connection, setConnection] = React.useState()
+    const [scale, setScale] = React.useState({})
     // const [keys, setKeys] = React.useState()
     const handleChange = name => event => {
         // console.log(event.target)
         setValues({ ...values, [name]: event.target.value });
+        if (name === 'scale') {
+            setCurrentScale(event.target.value)
+        }
     };
+
+    const setCurrentScale = (addressScale) => {
+        for (let scale of scales) {
+            if (scale.address === addressScale ) {
+                setScale(scale)
+            }
+        }
+    }
 
     const  validate = () => {
         const valuesKeys = Object.keys(values)
@@ -135,19 +137,31 @@ export default function TextFields(props) {
         } else {
             const connection = SocketLib.connectToSocket(values.scale)
             setConnection(connection)
+            // setValues({values, scaleName:values.scale})
             setOpen(true)
         }
     } 
 
     const sendOrder = () => {
         values.command = "SI"
+        values.scaleName = scale.name
         values.base = parseInt(values.base)
         values.min = parseInt(values.min)
         values.max = parseInt(values.max)
         values.treshold = parseInt(values.treshold)
         values.quantity = parseInt(values.quantity)
-        console.log(values)
-        SocketLib.sendToSocket(values, connection)
+        fetch('http://localhost:5000/order', {
+            method: 'POST',
+            body: JSON.stringify(values) 
+        })
+        .then(data => data.json())
+        .then(data => {
+            values.guid = data
+            SocketLib.sendToSocket(values, connection)
+            })
+            .catch((err) => {
+                console.log(err) 
+            })
     }
 
     const closeDialog = () => {
@@ -193,7 +207,7 @@ export default function TextFields(props) {
                     variant="outlined"
                 >
                     {operators.map(option => (
-                        <MenuItem key={option.value} value={option.value}>
+                        <MenuItem key={option.label} value={option.label}>
                             {option.label}
                         </MenuItem>
                     ))}
@@ -207,6 +221,7 @@ export default function TextFields(props) {
                     className={classes.textField}
                     value={values.scale}
                     onChange={handleChange('scale')}
+                    // onChange={setCurrentScale(values.scale)}
                     SelectProps={{
                         MenuProps: {
                             className: classes.menu,
@@ -219,9 +234,9 @@ export default function TextFields(props) {
                     margin="normal"
                     variant="outlined"
                 >
-                    {scales.map(option => (
-                        <MenuItem key={option.address} value={option.address}>
-                            {option.name}
+                    {scales.map(scale => (
+                        <MenuItem key={scale.address} value={scale.address} >
+                            {scale.name}
                         </MenuItem>
                     ))}
 
@@ -324,10 +339,10 @@ export default function TextFields(props) {
                 {!errors.errors?<DialogTitle id="alert-dialog-title">Wysyłanie zlecenia</DialogTitle>:<DialogTitle id="alert-dialog-title">UWAGA!</DialogTitle>}
                 <DialogContent>
                 {!errors.errors&&<DialogContentText id="alert-dialog-description">
-                    Zamierzasz wysłać następujące zlecenie do wagi: <b>{values.scale}</b> <br/> <br/>
+                    Zamierzasz wysłać następujące zlecenie do wagi: <b>{scale.name}</b> <br/> <br/>
                     <li>Twoja nazwa: {values.name}</li>
                     <li>Operator: {values.operator}</li>
-                    <li>Waga: {values.scale}</li>
+                    <li>Waga: {scale.name}/{values.scale}</li>
                     <li>Podstawa: {values.base}</li>
                     <li>Max: {values.max}</li>
                     <li>Min: {values.min}</li>

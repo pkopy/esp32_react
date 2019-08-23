@@ -24,10 +24,26 @@ class App extends Component {
         scales: [],
         currentScale: {},
         details:false,
-        end:false
+        end:false,
+        yourOrders:[]
     }
     componentDidMount = () => {
         this.yourScales()
+        this.orders()
+    }
+
+    orders = () => {
+        this.setState({load: true})
+        fetch('http://localhost:5000/order')
+            .then(data => data.json())
+            .then(yourOrders => {
+                this.setState({yourOrders})
+                this.setState({load: false})
+            })
+            .catch((err) => {
+                console.log(err)
+                this.setState({load: false})
+            })
     }
 
     yourScales = () => {
@@ -86,9 +102,11 @@ class App extends Component {
                 address={this.state.currentScale.address}
                 findScales={this.findScales}
                 yourScales={this.yourScales}
+                orders={this.orders}
                 newOrder={this.state.newOrder}
                 changeNewOrderStatus={this.changeNewOrderStatus}
                 scales={this.state.scales}
+                yourOrders={this.state.yourOrders}
             />
             {/* {this.state.scales.length>0&&
                 <div className="scales">

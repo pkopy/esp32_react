@@ -18,18 +18,21 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
-import DeleteIcon from '@material-ui/icons/Delete';
-import DetailsIcon from '@material-ui/icons/Details';
+
 import Tooltip from '@material-ui/core/Tooltip';
 import { HoverStyle } from 'devextreme-react/range-selector';
 import 'typeface-roboto';
+import Scale from './Scale'
 
 
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        width: '40%',
+        display: 'flex',
+        flexWrap: 'wrap',
+        width: '80%',
+        justifyContent: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
         
@@ -53,75 +56,19 @@ const useStyles = makeStyles(theme => ({
 
 export default function Scales(props) {
     const classes = useStyles();
-    const [dense, setDense] = React.useState(false);
-    const [secondary, setSecondary] = React.useState(false);
 
     return (
-        <div className={classes.container}>
-            {/* <h1>Twoje Wagi</h1> */}
-
-
-            {/* <Grid item xs={6} md={6}> */}
+        <div>
             <Typography variant="h4" className={classes.title} >
                 Twoje wagi
             </Typography>
-            <div className={classes.demo}>
-                <List >
-                    {props.scales.map(elem =>
-
-                        <ListItem key={elem.address} className={classes.itemText}>
-                            <Tooltip title={elem.address}>
-                                <Avatar>
-                                    <InboxIcon />
-                                </Avatar>
-
-                            </Tooltip>
-                            {/* <ListItemText
-                                    primary={elem.address}
-                                    secondary={secondary ? 'Secondary text' : null}
-                                /> */}
-                            <Typography variant="h6" style={{paddingLeft:20}}>
-                                {elem.name}
-                            </Typography>
-                            {/* <h2 style={{ marginLeft: '10%' }}></h2> */}
-                            <ListItemSecondaryAction>
-                                <Tooltip title="Usuń">
-                                    <IconButton edge="end" aria-label="delete">
-                                        <DeleteIcon />
-                                    </IconButton>
-
-                                </Tooltip>
-                                <Tooltip title="Szczegóły">
-                                    <IconButton edge="end" aria-label="delete">
-                                        <DetailsIcon />
-                                    </IconButton>
-
-                                </Tooltip>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                    )}
-                    {/* {generate(
-                            <ListItem>
-                                <ListItemAvatar>
-                                    <Avatar>
-                                        <FolderIcon />
-                                    </Avatar>
-                                </ListItemAvatar>
-                                <ListItemText
-                                    primary={props.address}
-                                    secondary={secondary ? 'Secondary text' : null}
-                                />
-                                <ListItemSecondaryAction>
-                                    <IconButton edge="end" aria-label="delete">
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>,
-                            props.scales
-                        )} */}
-                </List>
+            <div className={classes.container}>
+                {props.scales.map(elem => 
+                    <Scale key={elem.address}
+                        scale={elem}
+                    />
+                )}
             </div>
-            {/* </Grid> */}
 
         </div>
 
