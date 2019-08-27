@@ -9,7 +9,8 @@ import DataTable from '../DataTable'
 import 'devextreme/dist/css/dx.common.css';
 import 'devextreme/dist/css/dx.light.css';
 import TextBox from 'devextreme-react/text-box';
-import Loader from '../Loader'
+import Loader from '../Loader';
+
 
 import Chart, {
     ArgumentAxis,

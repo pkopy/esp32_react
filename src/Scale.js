@@ -84,7 +84,7 @@ export default function RecipeReviewCard(props) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites">
+                <IconButton aria-label="add to favorites" onClick={() => console.log('scale')}>
                     <DetailsIcon />
                 </IconButton>
                 <IconButton aria-label="share">

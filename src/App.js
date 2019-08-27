@@ -12,7 +12,6 @@ import Lib from './Socket'
 const dotenv = require('dotenv');
 dotenv.config();
 console.log(`Your port is ${process.env.REACT_APP_PORTX}`)
-Lib.test()
 // const PORT = PORT || 5000
 // const URL = URL || 'localhost'
 
@@ -21,6 +20,7 @@ class App extends Component {
         load: false,
         newOrder: false,
         details:false,
+        findedScales: [],
         scales: [],
         currentScale: {},
         details:false,
@@ -37,8 +37,16 @@ class App extends Component {
         fetch('http://localhost:5000/order')
             .then(data => data.json())
             .then(yourOrders => {
-                this.setState({yourOrders})
-                this.setState({load: false})
+                // console.log(yourOrders)
+                if (yourOrders.length > 0 ) {
+                    this.setState({yourOrders})
+                    this.setState({load: false})
+
+                } else {
+                    this.setState({yourOrders:[]})
+                    this.setState({load: false})
+                }
+                
             })
             .catch((err) => {
                 console.log(err)
@@ -66,7 +74,7 @@ class App extends Component {
             .then(data => data.json())
             .then(data => {
                 console.log(data)
-                this.setState({scales: data});
+                this.setState({findedScales: data});
                 this.setState({load: false})
             })
             .catch(err => {

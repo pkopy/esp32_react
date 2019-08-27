@@ -14,6 +14,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function MaterialTableDemo(props) {
     const classes = useStyles();
+    console.log(props.yourOrders)
     const [state, setState] = React.useState({
         columns: [
             { title: 'Twoja nazwa', field: 'name' },
@@ -29,20 +30,30 @@ export default function MaterialTableDemo(props) {
 
     return (
         <div className={classes.tab}>
-            
+
             <MaterialTable
-            
+
                 title="Zlecenia"
                 columns={state.columns}
                 data={props.yourOrders}
                 actions={
                     [
-                        rowData => ({
+                        {
+                            icon: 'edit',
+                            tooltip: 'Edycja',
+                            onClick: (event, rowData) => props.viewOrder(rowData)
+                        },
+                        {
+                            icon: 'delete',
+                            tooltip: 'Skasuj',
+                            onClick: (event, rowData) => console.log("You want to delete " + rowData.name)
+                          },
+                        {
                             icon: 'chevron_right',
                             tooltip: 'Szczegóły',
                             onClick: (event, rowData) => console.log("You want to delete " + rowData.name),
                             // disabled: rowData.birthYear < 2000
-                        }),
+                        },
                     ]}
                 options={{
                     actionsColumnIndex: -1

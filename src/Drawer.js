@@ -24,6 +24,7 @@ import Orders from './Orders/Orders'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import Scales from './Scales'
 import OrdersList from './Orders/OrdersList'
+import Detail from './Details/Detail'
 
 
 const drawerWidth = 240;
@@ -88,6 +89,7 @@ export default function PersistentDrawerLeft(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const [order, setOrder] = React.useState()
     const [view, setView] = React.useState({
         order: false,
         details: false,
@@ -119,6 +121,11 @@ export default function PersistentDrawerLeft(props) {
         drawerView('ordersList')
 
     }
+    
+    function viewOrder (order) {
+        drawerView('order')
+        setOrder(order)
+    }
 
     
 
@@ -133,6 +140,7 @@ export default function PersistentDrawerLeft(props) {
                 helpView[value] = true
             }
         }
+        setOrder({})
         setView(helpView)
         handleDrawerClose()
 
@@ -214,6 +222,7 @@ export default function PersistentDrawerLeft(props) {
 
                 {view.ordersList&&<OrdersList 
                     yourOrders={props.yourOrders}
+                    viewOrder={viewOrder}
                 />}
 
                 {view.details && <Details
@@ -223,7 +232,10 @@ export default function PersistentDrawerLeft(props) {
                 {view.order && <Orders
                     address={props.address}
                     scales={props.scales}
+                    order={order}
                 />}
+
+                <Detail/>
                 <Typography paragraph>
 
                 </Typography>

@@ -75,7 +75,8 @@ const operators = [
 export default function TextFields(props) {
     const classes = useStyles();
     const scales = props.scales
-    const [values, setValues] = React.useState({
+    console.log('props.order: ', props.order)
+    const order = props.order && Object.keys(props.order).length > 0? props.order : {
         name: '',
         base: '',
         min:'',
@@ -84,8 +85,10 @@ export default function TextFields(props) {
         treshold: '',
         quantity: '',
         scale:'',
-        // scaleName: ''
-    });
+        // scaleName: scale.name
+    }
+    // console.log(order)
+    const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
         base: false,
@@ -124,7 +127,7 @@ export default function TextFields(props) {
         setError(err)
         
         for (let value of valuesKeys) {
-            if (values[value] === '' || values[value] <= 0) {
+            if (values[value] === '' || values[value] <= 0 || !values[value]) {
                 err[value] = true
                 err.errors = true
             } else {
@@ -144,7 +147,7 @@ export default function TextFields(props) {
 
     const sendOrder = () => {
         values.command = "SI"
-        values.scaleName = scale.name
+        values.scaleName = values.scaleName ? values.scaleName : scale.name
         values.base = parseInt(values.base)
         values.min = parseInt(values.min)
         values.max = parseInt(values.max)
@@ -158,6 +161,7 @@ export default function TextFields(props) {
         .then(data => {
             values.guid = data
             SocketLib.sendToSocket(values, connection)
+            connection.close()
             })
             .catch((err) => {
                 console.log(err) 
@@ -177,7 +181,7 @@ export default function TextFields(props) {
                     label="Twoja nazwa"
                     error={errors.name}
                     className={classes.textField}
-
+                    value={values.name}
                     onChange={handleChange('name')}
                     InputLabelProps={{
                         shrink: true,
@@ -248,7 +252,7 @@ export default function TextFields(props) {
                 <TextField
                     id="base"
                     label="Podstwa"
-                    // onChange={handleChange('age')}
+                    value={values.base}
                     error={errors.base}
                     type="number"
                     className={classes.textField}
@@ -266,6 +270,7 @@ export default function TextFields(props) {
                     id="max"
                     label="Max"
                     error={errors.max}
+                    value={values.max}
                     onChange={handleChange('max')}
                     type="number"
                     className={classes.textField}
@@ -281,6 +286,7 @@ export default function TextFields(props) {
                 <TextField
                     id="min"
                     label="Min"
+                    value={values.min}
                     error={errors.min}
                     onChange={handleChange('min')}
                     type="number"
@@ -299,6 +305,7 @@ export default function TextFields(props) {
                     id="treshold"
                     label="Próg LO"
                     error={errors.treshold}
+                    value={values.treshold}
                     onChange={handleChange('treshold')}
                     type="number"
                     className={classes.textField}
@@ -316,6 +323,7 @@ export default function TextFields(props) {
                     id="quantity"
                     label="Ilość ważeń"
                     error={errors.quantity}
+                    value={values.quantity}
                     onChange={handleChange('quantity')}
                     type="number"
                     min="0"
