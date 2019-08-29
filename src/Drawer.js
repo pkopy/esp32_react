@@ -25,6 +25,7 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import Scales from './Scales'
 import OrdersList from './Orders/OrdersList'
 import Detail from './Details/Detail'
+import OrderDetails from './Details/OrderDetails'
 
 
 const drawerWidth = 240;
@@ -90,11 +91,15 @@ export default function PersistentDrawerLeft(props) {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
     const [order, setOrder] = React.useState()
+    const [curentScale, setCurrentScale] = React.useState({})
+    const [currentOrder, setCurrentOrder] = React.useState({})
     const [view, setView] = React.useState({
         order: false,
         details: false,
-        scales: false,
-        ordersList:false
+        scales: true,
+        ordersList:false,
+        freeWeighing:false,
+        orderDetails: false
     })
 
     function handleDrawerOpen() {
@@ -218,11 +223,15 @@ export default function PersistentDrawerLeft(props) {
 
                 {view.scales&&<Scales
                     scales={props.scales}
+                    drawerView={drawerView}
+                    setCurrentScale={setCurrentScale}
                 />}
 
                 {view.ordersList&&<OrdersList 
                     yourOrders={props.yourOrders}
                     viewOrder={viewOrder}
+                    setCurrentOrder={setCurrentOrder}
+                    drawerView={drawerView}
                 />}
 
                 {view.details && <Details
@@ -235,7 +244,14 @@ export default function PersistentDrawerLeft(props) {
                     order={order}
                 />}
 
-                <Detail/>
+                {view.freeWeighing&&<Detail
+                    curentScale={curentScale}
+                    drawerView={drawerView}
+                />}
+                {view.orderDetails&&<OrderDetails
+                    data={currentOrder}
+                    drawerView={drawerView}
+                />}
                 <Typography paragraph>
 
                 </Typography>

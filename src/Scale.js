@@ -48,8 +48,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function RecipeReviewCard(props) {
     const classes = useStyles();
-    const [expanded, setExpanded] = React.useState(false);
-
+    
+    function startWeighing (scale) {
+        props.drawerView('freeWeighing')
+        props.setCurrentScale(scale)
+    }
 
     return (
         <Card className={classes.card}>
@@ -84,7 +87,7 @@ export default function RecipeReviewCard(props) {
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>
-                <IconButton aria-label="add to favorites" onClick={() => console.log('scale')}>
+                <IconButton aria-label="add to favorites" onClick={() => startWeighing(props.scale)}>
                     <DetailsIcon />
                 </IconButton>
                 <IconButton aria-label="share">

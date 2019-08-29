@@ -5,6 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import ProgressBar from '../ProgressBar'
 import SocketLib from '../Socket'
 import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
+import Scale from '../Scale';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,16 +20,20 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(1),
         marginRight: theme.spacing(1),
     },
+    details: {
+        display:'flex',
+    }
+    
 }));
 
-export default function PaperSheet() {
+export default function PaperSheet(props) {
     const classes = useStyles();
     const [connection, setConnection] = React.useState()
     const [button, setButton] = React.useState(true)
     // const x = SocketLib.connectToSocket('10.10.1.71')
     // // console.log(connection)
     // setConnection(x)
-    const [measure, setMeasure] = React.useState()
+    const [measure, setMeasure] = React.useState('0.0')
     
     // connection.onmessage = (e) => {
         // let data = e.data;
@@ -36,7 +43,7 @@ export default function PaperSheet() {
     // }
     // console.log(connection)
     function freeMeasurements() {
-        const x = SocketLib.connectToSocket('10.10.1.71')
+        const x = SocketLib.connectToSocket(props.curentScale.address)
         setConnection(x)
         x.onmessage = (e) => {
             let data = e.data;
@@ -47,9 +54,18 @@ export default function PaperSheet() {
         setButton(false)
     }
     function stopConnection() {
-        connection.close()
-        setButton(true)
-        setMeasure(0)
+        connection.send(JSON.stringify({command:'STOP'}));
+        connection.close();
+        setButton(true);
+        setMeasure('0.0');
+    }
+
+    function showScales() {
+        if (connection) {
+            stopConnection();
+
+        }
+        props.drawerView('scales');
     }
 
     return (
@@ -58,10 +74,22 @@ export default function PaperSheet() {
                 <ProgressBar
                     value={measure}
                 />
+                <div className={classes.details}>
+                    <Avatar aria-label="recipe" className={classes.avatar}>
+                            R
+                    </Avatar>
+                    <h1 style={{margin:0, marginLeft: 10}}>{props.curentScale.name}</h1>
+                    {/* <Scale
+                        scale={props.curentScale}
+                    /> */}
+                </div>
             </Paper>
             <Button className={classes.button} variant="outlined" color="primary" onClick={button?freeMeasurements:stopConnection}>
                 {/* {errors.errors ? <span>Popraw</span> : <span>Zamknij</span>} */}
-                {button?'START':'STOP'}
+                {button?'URUCHOM':'ZATRZYMAJ'}
+            </Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={showScales}>
+                POWRÓT
             </Button>
         </div>
     );

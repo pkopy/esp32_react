@@ -66,6 +66,8 @@ export default function Scales(props) {
                 {props.scales.map(elem => 
                     <Scale key={elem.address}
                         scale={elem}
+                        drawerView={props.drawerView}
+                        setCurrentScale={props.setCurrentScale}
                     />
                 )}
             </div>
