@@ -16,6 +16,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import MailIcon from '@material-ui/icons/Mail';
 import SearchIcon from '@material-ui/icons/Search';
 import Details from './Details/Details'
@@ -173,6 +174,9 @@ export default function PersistentDrawerLeft(props) {
                     <Typography variant="h6" noWrap>
                         E2R LITE
                     </Typography>
+                    {/* <IconButton>
+                        E2R LITE
+                    </IconButton> */}
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -194,23 +198,35 @@ export default function PersistentDrawerLeft(props) {
 
                 <List>
                     <ListItem button onClick={search}>
-                        <ListItemIcon><SearchIcon /></ListItemIcon>
+                        <ListItemIcon><SearchIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Szukaj' />
                     </ListItem>
                     <ListItem button onClick={myScales}>
-                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemIcon><InboxIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Twoje wagi (ESP32)' />
                     </ListItem>
                 </List>
                 <Divider />
                 <List>
-                    <ListItem button button onClick={myOrders}>
-                        <ListItemIcon><FormatListBulletedIcon /></ListItemIcon>
+                    <ListItem button onClick={myOrders}>
+                        <ListItemIcon><FormatListBulletedIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Twoje zlecenia' />
                     </ListItem>
                     <ListItem button onClick={() => drawerView('order')}>
-                        <ListItemIcon><AddCircleOutlineIcon /></ListItemIcon>
+                        <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Nowe zlecenie' />
+                    </ListItem>
+                    <ListItem button onClick={myOrders}>
+                        <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary='Operatorzy' />
+                    </ListItem>
+                </List>
+                <Divider />
+                <List>
+                    
+                    <ListItem button onClick={() => drawerView('order')}>
+                        <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
+                        <ListItemText primary='Towary' />
                     </ListItem>
                 </List>
             </Drawer>

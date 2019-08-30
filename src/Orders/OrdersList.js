@@ -3,6 +3,8 @@ import MaterialTable from 'material-table';
 import DetailsIcon from '@material-ui/icons/Details';
 import { findProps } from 'devextreme-react/core/template';
 import { makeStyles } from '@material-ui/styles';
+import DevExpressTable from '../Details/DevExpressTable'
+
 
 const useStyles = makeStyles(theme => ({
     tab: {
@@ -28,6 +30,15 @@ export default function MaterialTableDemo(props) {
         ],
         // data: props.yourOrders
     });
+    const columns = [
+        { title: 'Twoja nazwa', name: 'name' },
+            { title: 'Operator', name: 'operator' },
+            { title: 'Podstawa', name: 'base', type: 'numeric' },
+            { title: 'Max', name: 'max', type: 'numeric' },
+            { title: 'Min', name: 'min', type: 'numeric' },
+            { title: 'Próg LO', name: 'treshold', type: 'numeric' },
+            { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
+    ]
 
     const orderDetails = (data) => {
         // console.log(data)
@@ -46,7 +57,10 @@ export default function MaterialTableDemo(props) {
 
     return (
         <div className={classes.tab}>
-
+            <DevExpressTable 
+                data={props.yourOrders}
+                columns={columns}
+            />
             <MaterialTable
 
                 title="Zlecenia"
@@ -75,6 +89,7 @@ export default function MaterialTableDemo(props) {
                     actionsColumnIndex: -1
                 }}
             />
+
         </div>
 
     );

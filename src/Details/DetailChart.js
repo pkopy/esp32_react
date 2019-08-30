@@ -79,7 +79,7 @@ class DetailChart extends React.Component {
                         name={'Wartość'}
                         valueField={'measure'}
                         axis={'frequency'}
-                        type={'spline'}
+                        type={'line'}
                         color={'#3f51b5'}
                     />
                     {/* <Series
