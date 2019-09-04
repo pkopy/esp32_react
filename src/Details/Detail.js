@@ -28,12 +28,12 @@ const useStyles = makeStyles(theme => ({
 
 export default function PaperSheet(props) {
     const classes = useStyles();
-    const [connection, setConnection] = React.useState()
+    const [connection, setConnection] = React.useState({})
     const [button, setButton] = React.useState(true)
     // const x = SocketLib.connectToSocket('10.10.1.71')
     // // console.log(connection)
     // setConnection(x)
-    const [measure, setMeasure] = React.useState('0.0')
+    // const [measure, setMeasure] = React.useState('0.0')
     
     // connection.onmessage = (e) => {
         // let data = e.data;
@@ -43,12 +43,31 @@ export default function PaperSheet(props) {
     // }
     // console.log(connection)
     function freeMeasurements() {
+        // const socketsConns = Object.keys(connection)
+        // const x = SocketLib.connectToSocket(props.curentScale.address)
+        if (SocketLib.connection) {
+
+            console.log(SocketLib.connection)
+        }
+        // if (SocketLib.connection && !SocketLib.connection['url'].startsWith(`ws://${props.curentScale.address}`)) {
+        //     console.log(`ws://${props.curentScale.address}:7000`)
+        //     SocketLib.connection.close()
+        // }
         const x = SocketLib.connectToSocket(props.curentScale.address)
+        
+        // console.log(SocketLib.connection)
+        // connection[props.curentScale.address] = x
         setConnection(x)
+        console.log(x)
+        setTimeout(() => {
+
+            x.send(JSON.stringify({command:'C'}), x)
+        },500)
+        console.log(x)
         x.onmessage = (e) => {
             let data = e.data;
             const measure = JSON.parse(data);
-            setMeasure(measure.measure)
+            props.setMeasure(measure.measure)
             console.log(measure.measure)
         }
         setButton(false)
@@ -57,7 +76,7 @@ export default function PaperSheet(props) {
         connection.send(JSON.stringify({command:'STOP'}));
         connection.close();
         setButton(true);
-        setMeasure('0.0');
+        props.setMeasure('0.0');
     }
 
     function showScales() {
@@ -72,7 +91,7 @@ export default function PaperSheet(props) {
         <div>
             <Paper className={classes.root}>
                 <ProgressBar
-                    value={measure}
+                    value={props.measure}
                 />
                 <div className={classes.details}>
                     <Avatar aria-label="recipe" className={classes.avatar}>

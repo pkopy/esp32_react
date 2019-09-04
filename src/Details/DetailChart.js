@@ -25,62 +25,88 @@ import { Title } from 'devextreme-react/vector-map';
 // ]
 
 
-const complaintsData = []
+// const complaintsData = []
 
 class DetailChart extends React.Component {
-    complaintsData = this.props.data
+    // complaintsData = this.props.data
+    state={
+        range: true,
+        data: this.props.data.measurments,
+        range1: [this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]
+    }
+componentWillUnmount = () => {
+    this.setState({range1:''})
+    console.log(this.state.range1)
+}
 
+setRange = () => {
+    this.setState({range: !this.state.range}); 
+    if (this.state.range) {
+        this.setState({range1:[this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]})
+    } else {
+        this.setState({range1:[]})
+    }
+    console.log(this.state.range1)
+}
+
+create = () => {
+    return `<ValueAxis name={'frequency'} position={'left'} visualRange={this.state.range1}>
+    <ConstantLine value={this.props.data.base + this.props.data.max} width={2} color={'#4cae4c'} dashStyle={'dash'}>
+        <Label visible={true} />
+    </ConstantLine>
+    <ConstantLine value={this.props.data.base} width={2} color={'#fc3535'} dashStyle={'dash'}>
+        <Label visible={true} />
+    </ConstantLine>
+    <ConstantLine value={this.props.data.base - this.props.data.min} width={2} color={'#4cae4c'} dashStyle={'dash'}>
+        <Label visible={true} />
+    </ConstantLine>
+</ValueAxis>`
+}
 
     render() {
+        // range1 = this.state.range?[this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]:[]
         return (
-            <Paper style={{height:'600px'}}>
-
+            <Paper style={{ height: '600px' }}>
+                <div onClick={this.setRange}>HHHHHHH</div>
                 <Chart
-                    style={{height:'90%',width:'90%', marginLeft:'auto', marginRight: 'auto', marginTop:'20px', marginBottom:'30px'}}
+                    style={{ height: '90%', width: '90%', marginLeft: 'auto', marginRight: 'auto', marginTop: '20px', marginBottom: '30px' }}
                     className='test'
                     // title={{
                     //     text:'Wykres zlecenia',
                     //     paddingTop: 10,
                     //     allignment: 'left'
                     // }}
-                    dataSource={this.props.data.measurments}
+                    scheduleHiding={false}
+                    dataSource={this.state.data}
                     palette={'Harmony Light'}
                     id={'chart'}
                 >
-                    <Title text={'Wykres'} margin={{top:50}}>
-                    
+                    <Title text={'Wykres'} margin={{ top: 50 }} >
+
                     </Title>
-                    <ArgumentAxis allowDecimals={false}>
+                    <ArgumentAxis allowDecimals={true}>
                         {/* <Label overlappingBehavior={'stagger'} /> */}
                     </ArgumentAxis>
 
-                    <ValueAxis name={'frequency'} position={'left'} visualRange={[this.props.data.base - this.props.data.min - 10, this.props.data.base + this.props.data.max + 10]}>
+                    <ValueAxis name={'frequency'} position={'left'} visualRange={this.state.range1}>
+                        <ConstantLine value={this.props.data.base + this.props.data.max} width={2} color={'#4cae4c'} dashStyle={'dash'}>
+                            <Label visible={true} />
+                        </ConstantLine>
                         <ConstantLine value={this.props.data.base} width={2} color={'#fc3535'} dashStyle={'dash'}>
                             <Label visible={true} />
                         </ConstantLine>
-                        {/* <ConstantLine value={this.props.data[0].base} width={2} color={'blue'} dashStyle={'dash'}>
-                        <Label visible={false} />
-                    </ConstantLine> */}
+                        <ConstantLine value={this.props.data.base - this.props.data.min} width={2} color={'#4cae4c'} dashStyle={'dash'}>
+                            <Label visible={true} />
+                        </ConstantLine>
                     </ValueAxis>
-                    {/* <ValueAxis
-                    name={'percentage'}
-                    position={'right'}
-                    tickInterval={20}
-                    showZero={true}
-                    valueMarginsEnabled={false}
-                >
-                    <Label customizeText={customizePercentageText} />
-                    <ConstantLine value={80} width={2} color={'#fc3535'} dashStyle={'dash'}>
-                        <Label visible={false} />
-                    </ConstantLine>
-                </ValueAxis> */}
-
+                    {/* {this.create()} */}
                     <Series
                         name={'Wartość'}
                         valueField={'measure'}
                         axis={'frequency'}
                         type={'line'}
                         color={'#3f51b5'}
+                        
                     />
                     {/* <Series
                     name={'Cumulative percentage'}
@@ -92,8 +118,8 @@ class DetailChart extends React.Component {
 
                     <Tooltip
                         enabled={true}
-                        shared={true}
-                        // customizeTooltip={customizeTooltip}
+                        // shared={true}
+                    // customizeTooltip={customizeTooltip}
                     />
 
                     <Legend
@@ -108,41 +134,6 @@ class DetailChart extends React.Component {
     }
 }
 
-const data = complaintsData.sort(function (a, b) {
-    return b.count - a.count;
-});
 
-const totalCount = data.reduce(function (prevValue, item) {
-    return prevValue + item.count;
-}, 0);
-
-let cumulativeCount = 0;
-
-const dataArray = complaintsData.map(function (item) {
-    // cumulativeCount += item.count;
-    console.log(item)
-    return {
-        complaint: item.measureNumber,
-        count: item.measure,
-        // cumulativePercentage: Math.round(cumulativeCount * 100 / totalCount)
-    };
-});
-
-const customizeTooltip = function (info) {
-    // console.log(info)
-    return {
-        html: `<div><div class="tooltip-header">${
-            info.argumentText
-            }</div><div class="tooltip-body"><div class="series-name">${
-            info.points[0].seriesName
-            }: </div><div class="value-text">${
-            info.points[0].point.data.id
-            }</div></div>`
-    };
-};
-
-function customizePercentageText(info) {
-    return `${info.valueText}%`;
-}
 
 export default DetailChart;

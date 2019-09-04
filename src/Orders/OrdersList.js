@@ -4,7 +4,7 @@ import DetailsIcon from '@material-ui/icons/Details';
 import { findProps } from 'devextreme-react/core/template';
 import { makeStyles } from '@material-ui/styles';
 import DevExpressTable from '../Details/DevExpressTable'
-
+import SocketLib from '../Socket'
 
 const useStyles = makeStyles(theme => ({
     tab: {
@@ -51,7 +51,13 @@ export default function MaterialTableDemo(props) {
             },
         })
         .then(data => data.json())
-        .then(measurments => {data.measurments = measurments; props.setCurrentOrder(data); props.drawerView('orderDetails')})
+        .then(measurments => {
+            data.measurments = measurments; 
+            
+            if(SocketLib.connection) {
+                SocketLib.connection.close()
+            }
+            props.setCurrentOrder(data); props.drawerView('orderDetails')})
         .catch(err => console.log(err))
     }
 
@@ -60,8 +66,10 @@ export default function MaterialTableDemo(props) {
             <DevExpressTable 
                 data={props.yourOrders}
                 columns={columns}
+                viewOrder={props.viewOrder}
+                orderDetails={orderDetails}
             />
-            <MaterialTable
+            {/* <MaterialTable
 
                 title="Zlecenia"
                 columns={state.columns}
@@ -88,7 +96,7 @@ export default function MaterialTableDemo(props) {
                 options={{
                     actionsColumnIndex: -1
                 }}
-            />
+            /> */}
 
         </div>
 

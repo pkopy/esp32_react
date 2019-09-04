@@ -25,7 +25,8 @@ class App extends Component {
         currentScale: {},
         details:false,
         end:false,
-        yourOrders:[]
+        yourOrders:[],
+        measure:''
     }
     componentDidMount = () => {
         this.yourScales()
@@ -94,6 +95,10 @@ class App extends Component {
 
     }
 
+    setMeasure = (measure) => {
+        this.setState({measure})
+    }
+
     changeNewOrderStatus = () => {
         this.setState({newOrder:!this.state.newOrder})
     }
@@ -115,6 +120,8 @@ class App extends Component {
                 changeNewOrderStatus={this.changeNewOrderStatus}
                 scales={this.state.scales}
                 yourOrders={this.state.yourOrders}
+                measure={this.state.measure}
+                setMeasure={this.setMeasure}
             />
             {/* {this.state.scales.length>0&&
                 <div className="scales">

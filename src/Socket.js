@@ -2,14 +2,14 @@ import React from 'react';
 
 
 const lib = {}
-
+// lib.connectToSocket = ''
 lib.connectToSocket = (address) => {
     const connection = new WebSocket(`ws://${address}:7000`)
     // const measure = ''
     connection.onopen = () => {
         
-        let msg = {command: "C"};
-        connection.send(JSON.stringify(msg));
+        // let msg = {command: ""};
+        // connection.send(JSON.stringify(msg));
     }
 
     connection.onmessage = (e) => {
@@ -31,6 +31,8 @@ lib.sendToSocket = (msg, connection) => {
     // this.setState({end:false})
     // this.setState({rows:[]})
     // this.setState({data:[]})
+    const x = 
+    
     connection.send(JSON.stringify(msg))
 }
 

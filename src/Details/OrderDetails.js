@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
+// import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -15,7 +15,30 @@ import MaterialTable from 'material-table';
 import DetailChart from './DetailChart';
 // import { saveAs } from 'file-saver';
 import XLSX from 'xlsx'
-import DevExpressTable from './DevExpressTable'
+// import DevExpressTable from './DevExpressTable'
+
+import {
+    PagingState,
+    GroupingState,
+    IntegratedSummary,
+    IntegratedGrouping,
+    IntegratedPaging,
+    SummaryState,
+    DataTypeProvider,
+    RowDetailState
+} from '@devexpress/dx-react-grid';
+import {
+    Grid,
+    Table,
+    TableHeaderRow,
+    TableGroupRow,
+    GroupingPanel,
+    DragDropProvider,
+    Toolbar,
+    PagingPanel,
+    TableSummaryRow,
+    TableRowDetail,
+} from '@devexpress/dx-react-grid-material-ui';
 
 
 
@@ -38,7 +61,7 @@ const useStyles = makeStyles(theme => ({
         // minWidth: 650,
     },
     imgContainer: {
-        display:'flex',
+        display: 'flex',
         flexDirection: 'row-reverse',
         marginBottom: '20px'
 
@@ -46,21 +69,21 @@ const useStyles = makeStyles(theme => ({
     imgDiv: {
         width: '40px',
         height: '40px',
-        borderRadius:'50%',
+        borderRadius: '50%',
         transition: '0.5s',
-        '&:hover' : {
-            backgroundColor:'#282c3425',
-            cursor:'pointer'
+        '&:hover': {
+            backgroundColor: '#282c3425',
+            cursor: 'pointer'
         }
     },
-    
+
     img: {
         width: '24px',
         top: '8px',
         left: '-7px',
         position: 'relative',
     },
-    
+
     head: {
         textAlign: 'left',
         marginLeft: '15px',
@@ -78,20 +101,21 @@ const useStyles = makeStyles(theme => ({
 export default function DenseTable(props) {
     const classes = useStyles();
     const [chart, setChart] = React.useState(false)
-    const [state, setState] = React.useState({
-        columns: [
-            { title: 'Numer ważenia', field: 'measureNumber' },
-            { title: 'Waga (g)', field: 'measure' },
-            { title: 'Data', field: 'time', type: 'date' },
-            { title: 'Max', field: 'max', type: 'numeric' },
-            { title: 'Min', field: 'min', type: 'numeric' },
-            { title: 'Próg LO', field: 'treshold', type: 'numeric' },
-            { title: 'Ilość ważeń', field: 'quantity', type: 'numeric' },
-        ],
-        // data: props.yourOrders
-    });
-
-    const columns = [
+    // const [state, setState] = React.useState({
+    //     columns: [
+    //         { title: 'Numer ważenia', field: 'measureNumber' },
+    //         { title: 'Waga (g)', field: 'measure' },
+    //         { title: 'Data', field: 'time', type: 'date' },
+    //         { title: 'Max', field: 'max', type: 'numeric' },
+    //         { title: 'Min', field: 'min', type: 'numeric' },
+    //         { title: 'Próg LO', field: 'treshold', type: 'numeric' },
+    //         { title: 'Ilość ważeń', field: 'quantity', type: 'numeric' },
+    //     ],
+    //     // data: props.yourOrders
+    // });
+    //-----------------------------------------------------------------
+    const [pageSizes] = React.useState([5, 10, 15, 0]);
+    const [columns] = React.useState([
         { title: 'Numer ważenia', name: 'measureNumber' },
         { title: 'Waga (g)', name: 'measure' },
         { title: 'Data', name: 'time', type: 'date' },
@@ -100,17 +124,61 @@ export default function DenseTable(props) {
         { title: 'Próg LO', name: 'treshold', type: 'numeric' },
         { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
     ]
-   
-    const rows = props.data ? props.data.measurments : []
-    const name = props.data ? `Szczegóły zlecenia: ${props.data.name}` : 'Zlecenie:'
-    let sum = 0 
-    if (rows.length > 0) {
-        sum = rows.reduce((a,b) => {
-            let m = a.measure + b.measure
-            return {measure:m}
-        })
-
+    );
+    // const [rows] = useState([{ city: 'test' }]);
+    const [totalSummaryItems] = React.useState([
+        { columnName: 'measure', type: 'sum' },
+    ]);
+    const [tableColumnExtensions] = React.useState([
+        { columnName: 'measure', align: 'right' },
+    ]);
+    const generateRows = () => {
+        if (Array.isArray(props.data)) {
+            
+            return props.data
+        } else {
+            console.log(props.data)
+            const data = props.data ? props.data.measurments : []
+            console.log(data)
+            return data
+        }
     }
+    // const RowDetail = ({ row }) => (
+    //     <div>
+    //         <div style={{ width: '20px', height: '20px', backgroundColor: "#000" }} onClick={() => props.viewOrder(row)}></div>
+    //         Details for
+    //       {' '}
+    //         {row.name}
+    //         {' '}
+    //         from
+    //       {' '}
+    //         {row.city}
+    //         <div style={{ width: '20px', height: '20px', backgroundColor: "#000" }} onClick={() => orderDetails(row)}></div>
+    //     </div>
+    // );
+    const [rows] = React.useState(generateRows)
+    //================================================================
+
+    // const columns = [
+    //     { title: 'Numer ważenia', name: 'measureNumber' },
+    //     { title: 'Waga (g)', name: 'measure' },
+    //     { title: 'Data', name: 'time', type: 'date' },
+    //     { title: 'Max', name: 'max', type: 'numeric' },
+    //     { title: 'Min', name: 'min', type: 'numeric' },
+    //     { title: 'Próg LO', name: 'treshold', type: 'numeric' },
+    //     { title: 'Ilość ważeń', name: 'quantity', type: 'numeric' },
+    // ]
+
+    // const rows = props.data ? props.data.measurments : []
+    const name = props.data ? `Szczegóły zlecenia: ${props.data.name}` : 'Zlecenie:'
+    let sum = 0
+    // if (rows.length > 0) {
+    //     sum = rows.reduce((a, b) => {
+    //         let m = a.measure + b.measure
+    //         return { measure: m }
+    //     })
+
+    // }
     const quantity = props.data.quantity
     const toggleChart = () => {
         setChart(!chart)
@@ -123,33 +191,33 @@ export default function DenseTable(props) {
         const ws = XLSX.utils.aoa_to_sheet(ws_data);
         XLSX.utils.book_append_sheet(workbook, ws, ws_name);
         const dataLength = rows.length
-        let cellR = XLSX.utils.encode_cell({c:4, r:dataLength})
+        let cellR = XLSX.utils.encode_cell({ c: 4, r: dataLength })
         const sheet = workbook.Sheets['Arkusz1']
         sheet['!ref'] = `A1:${cellR}`
-        sheet[XLSX.utils.encode_cell({c:0, r:0})] = {v:'Numer'}
+        sheet[XLSX.utils.encode_cell({ c: 0, r: 0 })] = { v: 'Numer' }
         console.log(sheet['!cols'])
         var wscols = [
-            {wch:6},
-            {wch:7},
-            {wch:25},
-            
-        ];
-        
-        sheet['!cols'] = wscols;
-        for(let i = 0; i < dataLength; i++) {
-            let cellA = XLSX.utils.encode_cell({c:0, r:i+1})
-            sheet[cellA]={v:rows[i]['measureNumber']}
-            let cellB = XLSX.utils.encode_cell({c:1, r:i+1})
-            sheet[cellB]={v:rows[i]['measure']}
-            let cellC = XLSX.utils.encode_cell({c:2, r:i+1})
-            sheet[cellC]={v:rows[i]['time']}
-            
-        }
-            const fileName = props.data.name + '.xlsx'
-            console.log(workbook)
-            XLSX.writeFile(workbook, fileName);
+            { wch: 6 },
+            { wch: 7 },
+            { wch: 25 },
 
-            // saveAs(new Blob([wbout],{type:"application/octet-stream"}), "test.xlsx")
+        ];
+
+        sheet['!cols'] = wscols;
+        for (let i = 0; i < dataLength; i++) {
+            let cellA = XLSX.utils.encode_cell({ c: 0, r: i + 1 })
+            sheet[cellA] = { v: rows[i]['measureNumber'] }
+            let cellB = XLSX.utils.encode_cell({ c: 1, r: i + 1 })
+            sheet[cellB] = { v: rows[i]['measure'] }
+            let cellC = XLSX.utils.encode_cell({ c: 2, r: i + 1 })
+            sheet[cellC] = { v: rows[i]['time'] }
+
+        }
+        const fileName = props.data.name + '.xlsx'
+        console.log(workbook)
+        XLSX.writeFile(workbook, fileName);
+
+        // saveAs(new Blob([wbout],{type:"application/octet-stream"}), "test.xlsx")
         // var blob = new Blob([wbout], {type:"application/octet-stream"});
         // saveAs(blob, "test.xlsx");
 
@@ -162,13 +230,13 @@ export default function DenseTable(props) {
                     POWRÓT
                 </Button>
                 <div className={classes.imgDiv} onClick={exportToXLS}>
-                    <img className={classes.img} src={excelLogo}  />
+                    <img className={classes.img} src={excelLogo} />
                 </div>
                 <div className={classes.imgDiv}>
                     <img className={classes.img} src={pdfLogo} />
                 </div>
                 <div className={classes.imgDiv} onClick={toggleChart}>
-                    <img className={classes.img} src={!chart?chartIcon:listIcon} />
+                    <img className={classes.img} src={!chart ? chartIcon : listIcon} />
                 </div>
             </div>
 
@@ -213,14 +281,69 @@ export default function DenseTable(props) {
             />} */}
 
 
-            {chart&&<DetailChart
+            {chart && <DetailChart
                 data={props.data}
             />}
 
-            {!chart&&<DevExpressTable
+            {/* {!chart && <DevExpressTable
                 data={props.data}
                 columns={columns}
-            />}
+            />} */}
+            {!chart&&<Paper>
+                <div >
+                    <h2></h2>
+                    <p>Waga całkowita:  (g)</p>
+                    <p>Ilość ważeń: </p>
+                </div>
+                <Grid
+                    rows={rows}
+                    columns={columns}
+                >
+                    <PagingState
+                        defaultCurrentPage={0}
+                        defaultPageSize={10}
+                    />
+                    {/* <RowDetailState
+                    // defaultExpandedRowIds={[2, 5]}
+                    /> */}
+
+                    <IntegratedPaging />
+                    <DragDropProvider />
+                    <GroupingState />
+                    {/* <GroupingState defaultGrouping={[{ columnName: 'city' }]} /> */}
+
+                    <IntegratedGrouping />
+                    <SummaryState
+                        totalItems={totalSummaryItems}
+                    />
+                    <IntegratedSummary />
+                    {/* <TableSummaryRow /> */}
+                    <Table />
+                    <TableHeaderRow />
+                    {/* <TableRowDetail
+                        contentComponent={RowDetail}
+                    /> */}
+                    <TableGroupRow />
+                    <Toolbar />
+                    <GroupingPanel
+                        messages={{
+                            groupByColumn: 'Przeciągnij kolumnę tutaj aby pogrupować'
+                        }}
+
+                    />
+                    <PagingPanel
+                        pageSizes={pageSizes}
+                        messages={{
+                            rowsPerPage: 'Wierszy na stronę',
+                            showAll: 'Wszystkie',
+
+                        }}
+                    />
+                </Grid>
+            </Paper>}
+
+
+
         </div>
     );
 }

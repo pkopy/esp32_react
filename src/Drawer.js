@@ -263,6 +263,8 @@ export default function PersistentDrawerLeft(props) {
                 {view.freeWeighing&&<Detail
                     curentScale={curentScale}
                     drawerView={drawerView}
+                    measure={props.measure}
+                    setMeasure={props.setMeasure}
                 />}
                 {view.orderDetails&&<OrderDetails
                     data={currentOrder}

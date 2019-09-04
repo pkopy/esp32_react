@@ -1,9 +1,7 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,23 +16,18 @@ import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+
 
 
 
 const useStyles = makeStyles(theme => ({
     container: {
-        // display: 'flex',
-        // width: '900px',
-        // flexWrap: 'wrap',
         marginLeft: 'auto',
         marginRight: 'auto',
-        // marginTop: '100px',
-        // marginBottom: '100px'
     },
     textField: {
         marginLeft: theme.spacing(2),
-        // marginRight: theme.spacing(2),
+
         width: 200,
     },
     dense: {
@@ -49,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     },
     hr: {
         borderTop: '1px solid rgb(0,0,0,0.25)',
-        // borderColor: 'rgb(0,0,255,0.25)',
         marginLeft: 'auto',
         marginRight: 'auto',
         width: '70%',
@@ -81,7 +73,6 @@ const operators = [
 export default function TextFields(props) {
     const classes = useStyles();
     const scales = props.scales
-    // console.log('props.order: ', props.order)
     const order = props.order && Object.keys(props.order).length > 0 ? props.order : {
         name: '',
         base: '',
@@ -91,10 +82,13 @@ export default function TextFields(props) {
         treshold: '',
         quantity: '',
         scale: '',
-        interval: ''
-        // scaleName: scale.name
+        interval: 'stab',
+        type:'quantity',
+        intervalValue:'',
+        range:false,
+        manualWeighing: false
     }
-    console.log(order)
+
     const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
@@ -106,29 +100,30 @@ export default function TextFields(props) {
         quantity: false,
         scale: false,
         errors: false,
-        interval: false
+        intervalValue: false,
+        manualWeighing: false
     })
-    const [type, setType] = React.useState('quantity');
-    const [interval, setInterval] = React.useState('stab')
     const [open, setOpen] = React.useState(false);
     const [connection, setConnection] = React.useState()
     const [scale, setScale] = React.useState({})
-    // const [keys, setKeys] = React.useState()
     const handleChange = name => event => {
-        // console.log(event.target)
+        console.log(event.target.value)
         setValues({ ...values, [name]: event.target.value });
         if (name === 'scale') {
             setCurrentScale(event.target.value)
         }
+        
     };
 
-    function changeType(event) {
-        setType(event.target.value);
+    const changeCheckboxValue = name => event => {
+        if (name === 'manualWeighing' && event.target.checked) {
+            setValues({ ...values, [name]: event.target.checked, interval:'stab' });
+        }
+        else {
+            setValues({ ...values, [name]: event.target.checked });
+        }
     }
-
-    function changeInterval(event) {
-        setInterval(event.target.value);
-    }
+    
 
     const setCurrentScale = (addressScale) => {
         for (let scale of scales) {
@@ -140,39 +135,50 @@ export default function TextFields(props) {
 
     const validate = () => {
         const valuesKeys = Object.keys(values)
-        // setKeys(valuesKeys)
         const err = {}
         setError(err)
 
         for (let value of valuesKeys) {
-            if (value !== 'interval' && (values[value] === '' || values[value] <= 0 || !values[value])) {
-                err[value] = true
+            if (value === 'interval' && values.interval === 'interval' && (values.intervalValue === '' || values.intervalValue <= 0 || !values.intervalValue)) {
+                console.log('OK')
+                err.intervalValue = true
                 err.errors = true
-            } else if (interval === 'interval' && (values[value] === '' || values[value] <= 0 || !values[value])) {
-                err.interval = true
+            } else if ((value === 'intervalValue' && values.interval === 'stab')|| value === 'manualWeighing' || value === 'range') {
+                err[value] = false
+            } else if ((values[value] === '' || values[value] <= 0 || !values[value])) {
+                err[value] = true
                 err.errors = true
             } else {
                 err[value] = false
             }
         }
 
-
+        console.log(err)
 
         if (err.errors) {
             setError(err)
             setOpen(true)
         } else {
             const connection = SocketLib.connectToSocket(values.scale)
+            console.log(connection)
             setConnection(connection)
-            // setValues({values, scaleName:values.scale})
             setOpen(true)
         }
     }
 
     const sendOrder = () => {
-        values.command = "SI"
+        if (values.interval === 'interval') {
+            values.command = "I"
+            console.log('IIIIIIIIIIIIII')
+        } else if (values.manualWeighing) {
+            values.command = "M"
+        } else {
+            console.log('SIIIIIIII')
+            values.command = "SI"
+        }
         values.scaleName = values.scaleName ? values.scaleName : scale.name
         values.base = parseInt(values.base)
+        values.intervalValue = parseInt(values.intervalValue)
         values.min = parseInt(values.min)
         values.max = parseInt(values.max)
         values.treshold = parseInt(values.treshold)
@@ -184,8 +190,9 @@ export default function TextFields(props) {
             .then(data => data.json())
             .then(data => {
                 values.guid = data
-                SocketLib.sendToSocket(values, connection)
-                connection.close()
+                console.log(values)
+                SocketLib.sendToSocket(
+                    values, connection)
             })
             .catch((err) => {
                 console.log(err)
@@ -242,63 +249,6 @@ export default function TextFields(props) {
 
                 </TextField>
 
-                {/* <TextField
-                    id="contractor"
-                    select
-                    error={errors.contractor}
-                    label="Kontrahent"
-                    className={classes.textField}
-                    value={values.contractor}
-                    onChange={handleChange('contractor')}
-                    SelectProps={{
-                        MenuProps: {
-                            className: classes.menu,
-                        },
-                    }}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    // helperText="Wybierz operatora"
-                    margin="normal"
-                    variant="outlined"
-                >
-                    {operators.map(option => (
-                        <MenuItem key={option.label} value={option.label}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-
-                </TextField>
-
-
-                <TextField
-                    id="article"
-                    select
-                    error={errors.article}
-                    label="Towar"
-                    className={classes.textField}
-                    value={values.article}
-                    onChange={handleChange('article')}
-                    SelectProps={{
-                        MenuProps: {
-                            className: classes.menu,
-                        },
-                    }}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    // helperText="Wybierz operatora"
-                    margin="normal"
-                    variant="outlined"
-                >
-                    {operators.map(option => (
-                        <MenuItem key={option.label} value={option.label}>
-                            {option.label}
-                        </MenuItem>
-                    ))}
-
-                </TextField> */}
-
                 <TextField
                     id="scale"
                     select
@@ -307,7 +257,6 @@ export default function TextFields(props) {
                     className={classes.textField}
                     value={values.scale}
                     onChange={handleChange('scale')}
-                    // onChange={setCurrentScale(values.scale)}
                     SelectProps={{
                         MenuProps: {
                             className: classes.menu,
@@ -408,10 +357,25 @@ export default function TextFields(props) {
                 <div className={classes.hr} style={{ width: '50%' }} />
             </div>
             <div className={classes.container} noValidate autoComplete="off">
-                
+                <FormControlLabel
+                    control={
+                        <Checkbox color="primary" id="test" value={values.manualWeighing} onChange={changeCheckboxValue('manualWeighing')} />
+                    }
+                    label="Ważenie ręczne"
+                />
+                <FormControlLabel
+                    control={
+                        <Checkbox color="primary" value={values.range} onChange={changeCheckboxValue('range')} />
+                    }
+                    label="Pilnuj zakresów ważenia"
+                />
+                {values.range&&<div>HHHHHHHHHHHHHHHHHHHHHHHHHHHH</div>}
+            </div>
+            <div className={classes.container} noValidate autoComplete="off">
+
                 <FormControl component="fieldset">
                     {/* <FormLabel component="legend">labelPlacement</FormLabel> */}
-                    <RadioGroup aria-label="position" name="position" value={type} style={{ marginTop: '20px', width: '250px' }} onChange={changeType} row>
+                    <RadioGroup aria-label="position" name="position" value={values.type} style={{ marginTop: '20px', width: '250px' }} onChange={handleChange('type')} row>
                         <FormControlLabel
                             value="quantity"
                             control={<Radio color="primary" />}
@@ -444,7 +408,7 @@ export default function TextFields(props) {
                         shrink: true,
                     }}
                     InputProps={{
-                        startAdornment: <InputAdornment position="start">{type === 'quantity' ? 'szt' : 'g'}</InputAdornment>,
+                        startAdornment: <InputAdornment position="start">{values.type === 'quantity' ? 'szt' : 'g'}</InputAdornment>,
                     }}
                     margin="normal"
                     variant="outlined"
@@ -457,7 +421,7 @@ export default function TextFields(props) {
 
                 <FormControl component="fieldset">
                     {/* <FormLabel component="legend">labelPlacement</FormLabel> */}
-                    <RadioGroup aria-label="position" name="position" value={interval} style={{ marginTop: '20px', width: '250px' }} onChange={changeInterval} row>
+                    {!values.manualWeighing&&<RadioGroup aria-label="position" name="position" value={values.interval} style={{ marginTop: '20px', width: '250px' }} onChange={handleChange('interval')} row>
                         <FormControlLabel
                             value="stab"
                             control={<Radio color="primary" />}
@@ -471,41 +435,32 @@ export default function TextFields(props) {
                             labelPlacement="start"
                         />
 
-                    </RadioGroup>
+                    </RadioGroup>}
+                    {values.interval == 'interval' && <TextField
+                        id="intervalValue"
+                        label="Interwał"
+                        error={errors.intervalValue}
+                        value={values.intervalValue}
+                        onChange={handleChange('intervalValue')}
+                        type="number"
+                        min="0"
+                        className={classes.textField}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+
+                            min: "1"
+                        }}
+                        InputProps={{
+                            startAdornment: <InputAdornment position="start">s</InputAdornment>,
+                        }}
+                        margin="normal"
+                        variant="outlined"
+                    />}
                 </FormControl>
-                {interval == 'interval' && <TextField
-                    id="interval"
-                    label="Interwał"
-                    error={errors.interval}
-                    value={values.interval}
-                    onChange={handleChange('interval')}
-                    type="number"
-                    min="0"
-                    className={classes.textField}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
-                    inputProps={{
-
-                        min: "1"
-                    }}
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">s</InputAdornment>,
-                    }}
-                    margin="normal"
-                    variant="outlined"
-                />}
             </div>
-            <div className={classes.container} noValidate autoComplete="off">
-                <FormControlLabel
-                    style={{marginTop:'20px'}}
-                    control={
-                        <Checkbox   color="primary" value="cccccc" onChange={(e)=>console.log(e.target.checked)}/>
-                    }
-                    label="Pilnuj zakresów ważenia"
-                />
-
-            </div>
+            
 
             <div className={classes.hr} />
             <Button className={classes.button} variant="outlined" color="primary" onClick={validate}> Wyślij zlecenie</Button>
@@ -528,7 +483,7 @@ export default function TextFields(props) {
                         <li>Min: {values.min}</li>
                         <li>Próg LO: {values.treshold}</li>
                         <li>Ilość ważeń: {values.quantity}</li>
-                        <li>Interwał: {values.interval}</li>
+                        {values.interval === 'interval'&&<li>Interwał: {values.intervalValue}</li>}
 
                     </DialogContentText>}
                     {errors.errors && <DialogContentText id="alert-dialog-description">
@@ -541,7 +496,7 @@ export default function TextFields(props) {
                         {errors.min && <li>Min</li>}
                         {errors.treshold && <li>Próg LO</li>}
                         {errors.quantity && <li>Ilość ważeń</li>}
-                        {errors.interval && <li>Interwał</li>}
+                        {errors.intervalValue && <li>Interwał</li>}
                     </DialogContentText>}
                 </DialogContent>
                 <DialogActions>
