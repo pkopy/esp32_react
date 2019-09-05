@@ -27,7 +27,7 @@ import Scales from './Scales'
 import OrdersList from './Orders/OrdersList'
 import Detail from './Details/Detail'
 import OrderDetails from './Details/OrderDetails'
-
+import Groups from './ItemTree/Groups'
 
 const drawerWidth = 240;
 
@@ -100,7 +100,8 @@ export default function PersistentDrawerLeft(props) {
         scales: true,
         ordersList:false,
         freeWeighing:false,
-        orderDetails: false
+        orderDetails: false,
+        items: false
     })
 
     function handleDrawerOpen() {
@@ -224,7 +225,7 @@ export default function PersistentDrawerLeft(props) {
                 <Divider />
                 <List>
                     
-                    <ListItem button onClick={() => drawerView('order')}>
+                    <ListItem button onClick={() => drawerView('items')}>
                         <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Towary' />
                     </ListItem>
@@ -270,6 +271,8 @@ export default function PersistentDrawerLeft(props) {
                     data={currentOrder}
                     drawerView={drawerView}
                 />}
+
+                {view.items&&<Groups />}
                 <Typography paragraph>
 
                 </Typography>

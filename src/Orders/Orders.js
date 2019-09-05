@@ -88,7 +88,8 @@ export default function TextFields(props) {
         range:false,
         manualWeighing: false
     }
-
+        order.manualWeighing = false
+    console.log(order)
     const [values, setValues] = React.useState(order);
     const [errors, setError] = React.useState({
         name: false,
