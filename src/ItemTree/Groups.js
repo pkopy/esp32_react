@@ -72,7 +72,7 @@ export default (props) => {
                         hasItemsExpr={'hasItems'}
                         rootValue={''}
                         // width={'25%'}
-                        onRowClick={(row) => {setCurrentGroup(row.data)}}
+                        onRowClick={(row) => {setCurrentGroup(row.data); console.log(row.data)}}
 
                     >
                         {/* <SearchPanel visible={true} width={215} searchVisibleColumnsOnly={true}/> */}
@@ -112,7 +112,7 @@ export default (props) => {
 
                     {currentGroup && currentGroup.parentId && <Tabs dataSource={[
                         { text: 'Element testowy' },
-                        { text: 'Zmienna' },
+                        { text: 'Zmienna', disabled:true},
                         { text: 'Alarmy i ostrzeżenia' },
                         { text: 'Info w obszarze testowym' },
                         // { text: 'favorites' },
@@ -122,7 +122,10 @@ export default (props) => {
                         // { text: 'shipment' }
                         
                     ]} selectedIndex={index} repaintChangesOnly={true} onItemClick={(ev)=>setIndex(ev.itemIndex)}/>}
-                    {currentGroup && currentGroup.parentId && index === 0 &&<TestElement/>}
+                    {currentGroup && currentGroup.parentId && index === 0 &&
+                    <TestElement 
+                        group={currentGroup}
+                    />}
                 </Paper>
             </Paper>
 

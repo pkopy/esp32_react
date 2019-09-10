@@ -24,6 +24,17 @@ import {
     TableRowDetail,
 } from '@devexpress/dx-react-grid-material-ui';
 import infoIcon from '../img/paramInfo.svg'
+import deleteIcon from '../img/delete.svg'
+
+import Grid1 from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardTimePicker,
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+
+
 
 // import { generateRows } from '../../../demo-data/generator';
 
@@ -38,12 +49,19 @@ const useStyles = makeStyles(theme => ({
             cursor: 'pointer'
         }
     },
-    img: {
-        // width: '24px',
-        // top: '8px',
-        // left: '-7px',
-        // position: 'relative',
+    img1: {
+        width: 40,
+        top: 1,
+        // height:'24px',
+        position: 'relative',
     },
+    img2: {
+        position: 'relative',
+        width: 32,
+        top: 4,
+        left: 4
+    },
+
     imgContainer: {
         display: 'flex',
         // flexDirection: 'row-reverse',
@@ -53,6 +71,11 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default (props) => {
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
+
+    function handleDateChange(date) {
+      setSelectedDate(date);
+    }
     const classes = useStyles();
     const [pageSizes] = useState([5, 10, 15, 0]);
     const [columns] = useState(props.columns);
@@ -74,13 +97,43 @@ export default (props) => {
 
         }
     }
+
+    const refresh = (row) => {
+        const test = row
+        console.log(test)
+        let x = props.orderDetails(test)
+        // setInterval(() => {
+        //     console.log(x)
+        // }, 1000)
+    }
+
+    const deleteOrder = (row) => {
+        console.log(row)
+        fetch('http://localhost:5000/order', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'guid': row.guid,
+
+            },
+        })
+            .then(data => data.json())
+            .then(order => {
+                console.log(order)
+                // props.setCurrentOrder(data); props.drawerView('orderDetails')
+            })
+            .catch(err => console.log(err))
+    }
     const RowDetail = ({ row }) => (
         <div className={classes.imgContainer}>
             <div className={classes.imgDiv} onClick={()=>props.viewOrder(row)}>
-                <img className={classes.img} src={infoIcon} />
+                <img className={classes.img1} src={infoIcon} />
             </div>
             <div className={classes.imgDiv} onClick={() => props.orderDetails(row)}>
-                <img className={classes.img} src={infoIcon} />
+                <img className={classes.img1} src={infoIcon} />
+            </div>
+            <div className={classes.imgDiv}  >
+                <img className={classes.img2}  src={deleteIcon} onClick={() => deleteOrder(row)}/>
             </div>
         </div>
         // <div>
@@ -104,6 +157,23 @@ export default (props) => {
                 <p>Waga całkowita:  (g)</p>
                 <p>Ilość ważeń: </p>
             </div>
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Grid1 container justify="space-around">
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="MM/dd/yyyy"
+                            margin="normal"
+                            id="date-picker-inline"
+                            label="Date picker inline"
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </Grid1>
+                </MuiPickersUtilsProvider>
             <Grid
                 rows={rows}
                 columns={columns}

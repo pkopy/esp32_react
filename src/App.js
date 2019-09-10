@@ -88,7 +88,6 @@ class App extends Component {
     }
     
     setScale = (scale) => {
-        // this.setState({currentScale:{}})
         
         this.setState({currentScale:scale})
         this.setState({details:true})
@@ -107,10 +106,6 @@ class App extends Component {
         return (
         <div className="App">
             {this.state.load&&<Loader />}
-            {/* <AppBar
-                load={this.load}
-            /> */}
-            {/* <Scales /> */}
             <Drawer
                 address={this.state.currentScale.address}
                 findScales={this.findScales}
@@ -123,24 +118,6 @@ class App extends Component {
                 measure={this.state.measure}
                 setMeasure={this.setMeasure}
             />
-            {/* {this.state.scales.length>0&&
-                <div className="scales">
-                    <ol>
-                        {this.state.scales.map(scale =>
-                            <li key={scale.address} className="scale" onClick={() =>this.setScale(scale)}>
-                                <div>
-                                    <h1>{scale.address}</h1>
-                                    <AddCircleOutlineIcon/>
-                                </div>
-                            </li>    
-                        )}
-                    </ol>
-
-                </div>
-            } */}
-            {/* {this.state.currentScale.address&&<Details
-                address={this.state.currentScale.address}
-            />} */}
         </div>
       );
     }

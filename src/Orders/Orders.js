@@ -437,6 +437,7 @@ export default function TextFields(props) {
                         />
 
                     </RadioGroup>}
+                </FormControl>
                     {values.interval == 'interval' && <TextField
                         id="intervalValue"
                         label="Interwał"
@@ -459,13 +460,13 @@ export default function TextFields(props) {
                         margin="normal"
                         variant="outlined"
                     />}
-                </FormControl>
             </div>
             
 
             <div className={classes.hr} />
-            <Button className={classes.button} variant="outlined" color="primary" onClick={validate}> Wyślij zlecenie</Button>
-            <Button className={classes.button} variant="outlined" color="primary"> Zapisz zlecenie</Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={validate}>Wyślij zlecenie</Button>
+            <Button className={classes.button} variant="outlined" color="primary">Zapisz zlecenie</Button>
+            <Button className={classes.button} variant="outlined" color="primary" onClick={() => props.drawerView('ordersList')}>POWRÓT</Button>
             <Dialog
                 open={open}
                 // onClose={handleClose}

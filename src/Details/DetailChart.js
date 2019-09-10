@@ -31,13 +31,14 @@ class DetailChart extends React.Component {
     // complaintsData = this.props.data
     state={
         range: true,
-        data: this.props.data.measurments,
+        data: this.props.data,
         range1: [this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]
     }
 componentWillUnmount = () => {
     this.setState({range1:''})
     console.log(this.state.range1)
 }
+
 
 setRange = () => {
     this.setState({range: !this.state.range}); 
@@ -64,6 +65,7 @@ create = () => {
 }
 
     render() {
+        console.log(this.props.data)
         // range1 = this.state.range?[this.props.data.base - this.props.data.min*1.1, this.props.data.base + this.props.data.max*1.1]:[]
         return (
             <Paper style={{ height: '600px' }}>
@@ -76,9 +78,23 @@ create = () => {
                     //     paddingTop: 10,
                     //     allignment: 'left'
                     // }}
-                    scheduleHiding={false}
-                    dataSource={this.state.data}
-                    palette={'Harmony Light'}
+                    animation={{
+
+                        enabled:false
+                    }}
+                    scrollBar={{
+                        visible:true
+                    }}
+                    zoomAndPan= {{
+                        argumentAxis: "both"
+                    }}
+                    visualRange={{
+                        startValue: this.props.data.base - this.props.data.min*1.1,
+                        endValue: this.props.data.base + this.props.data.max*1.1
+                    }}
+                    // scheduleHiding={false}
+                    dataSource={this.props.rows}
+                    // palette={'Harmony Light'}
                     id={'chart'}
                 >
                     <Title text={'Wykres'} margin={{ top: 50 }} >
@@ -88,7 +104,7 @@ create = () => {
                         {/* <Label overlappingBehavior={'stagger'} /> */}
                     </ArgumentAxis>
 
-                    <ValueAxis name={'frequency'} position={'left'} visualRange={this.state.range1}>
+                    <ValueAxis name={'frequency'} position={'left'} >
                         <ConstantLine value={this.props.data.base + this.props.data.max} width={2} color={'#4cae4c'} dashStyle={'dash'}>
                             <Label visible={true} />
                         </ConstantLine>
@@ -116,11 +132,11 @@ create = () => {
                     color={'#6b71c3'}
                 /> */}
 
-                    <Tooltip
-                        enabled={true}
+                    {/* <Tooltip
+                        // enabled={true}
                         // shared={true}
                     // customizeTooltip={customizeTooltip}
-                    />
+                    /> */}
 
                     <Legend
                         verticalAlignment={'top'}

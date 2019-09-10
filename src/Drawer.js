@@ -28,6 +28,9 @@ import OrdersList from './Orders/OrdersList'
 import Detail from './Details/Detail'
 import OrderDetails from './Details/OrderDetails'
 import Groups from './ItemTree/Groups'
+import TextF from './MyComponents/TextFieldwithTitle'
+import './Details/OrderDetails.scss'
+
 
 const drawerWidth = 240;
 
@@ -101,7 +104,8 @@ export default function PersistentDrawerLeft(props) {
         ordersList:false,
         freeWeighing:false,
         orderDetails: false,
-        items: false
+        items: false,
+        name:''
     })
 
     function handleDrawerOpen() {
@@ -147,8 +151,10 @@ export default function PersistentDrawerLeft(props) {
                 helpView[value] = true
             }
         }
+        helpView.name = name
         setOrder({})
         setView(helpView)
+        console.log(view.name)
         handleDrawerClose()
 
     }
@@ -173,7 +179,10 @@ export default function PersistentDrawerLeft(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        E2R LITE
+                        E2R LITE - 
+                    </Typography>
+                    <Typography variant="h6" noWrap>
+                    &nbsp;{view.name}
                     </Typography>
                     {/* <IconButton>
                         E2R LITE
@@ -213,10 +222,10 @@ export default function PersistentDrawerLeft(props) {
                         <ListItemIcon><FormatListBulletedIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Twoje zlecenia' />
                     </ListItem>
-                    <ListItem button onClick={() => drawerView('order')}>
+                    {/* <ListItem button onClick={() => drawerView('order')}>
                         <ListItemIcon><AddCircleOutlineIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Nowe zlecenie' />
-                    </ListItem>
+                    </ListItem> */}
                     <ListItem button onClick={myOrders}>
                         <ListItemIcon><SupervisorAccountIcon color="primary"/></ListItemIcon>
                         <ListItemText primary='Operatorzy' />
@@ -259,6 +268,7 @@ export default function PersistentDrawerLeft(props) {
                     address={props.address}
                     scales={props.scales}
                     order={order}
+                    drawerView={drawerView}
                 />}
 
                 {view.freeWeighing&&<Detail
@@ -276,6 +286,9 @@ export default function PersistentDrawerLeft(props) {
                 <Typography paragraph>
 
                 </Typography>
+                {/* <TextF
+                    title={'okokoko'}
+                /> */}
             </main>
         </div>
     );
