@@ -16,7 +16,7 @@
     "file-saver": "^2.0.2",
     "material-table": "^1.50.0",
     "mysql": "^2.17.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^7.0.0",
     "node-wifi": "^2.0.7",
     "pdfkit": "^0.10.0",
     "react": "^16.8.6",
